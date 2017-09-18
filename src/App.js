@@ -107,16 +107,16 @@ const App = StackNavigator({
                 <View style={{flexDirection: 'row'}}>
                     <TouchableOpacity
                         onPress={() => ToastAndroid.show("Search", ToastAndroid.SHORT)}
-                        style={{marginRight: 20}}
+                        style={{marginRight: 10, marginTop: 2.5}}
                     >
-                        <Image source={require('./images/search.png')}/>
+                        <Image style={{ height: 25, width: 25 }} source={require('./images/search.png')}/>
                     </TouchableOpacity>
 
                     <TouchableOpacity
                         onPress={() => ToastAndroid.show("Menu", ToastAndroid.SHORT)}
-                        style={{marginRight: 20}}
+                        style={{marginRight: 10}}
                     >
-                        <Image source={require('./images/menu.png')}/>
+                        <Image style={{ height: 30, width: 30 }} source={require('./images/menu.png')}/>
                     </TouchableOpacity>
                 </View>
             )

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, TouchableOpacity, LayoutAnimation, UIManager, Platform } from 'react-native';
+import { Text, View, TouchableOpacity, LayoutAnimation, UIManager, Platform, Image, ToastAndroid } from 'react-native';
 import { Card, CardSection } from './common';
 import PushNotification from 'react-native-push-notification';
 
@@ -39,15 +39,28 @@ class TaskComponent extends Component {
     render() {
         let color = '#FFF';
         let font = '#000';
+        let dateFont = '#ADADAC';
+        let more_menu = require('../images/more_menu.png');
         if (this.state.expanded) {
             color = '#00b3ff';
             font = '#FFF';
+            dateFont = '#ECECEB';
+            more_menu = require('../images/more_menu_white.png');
         }
         return(
             <TouchableOpacity onPress={this.toggleDescription}>
                 <Card>
                     <CardSection style={{ backgroundColor: color }}>
-                        <Text style={{ ...styles.titleStyle, color: font }}>{this.props.item.title}</Text>
+                        <View>
+                            <Text style={{ ...styles.titleStyle, color: font }}>{this.props.item.title}</Text>
+                            <Text style={{ ...styles.timeStyle, color: dateFont }}>{this.props.item.taskDate.toString()}</Text>
+                        </View>
+                        <TouchableOpacity
+                            style={{ position: 'absolute', right: 10, top: 8, justifyContent: 'center' }}
+                            onPress={() => ToastAndroid.show("Sub Menu", ToastAndroid.SHORT)}
+                        >
+                            <Image style={{ height: 25, width: 25 }} source={more_menu} />
+                        </TouchableOpacity>
                     </CardSection>
                     {this.renderDescription()}
                 </Card>
@@ -61,6 +74,11 @@ const styles = {
         fontSize: 20,
         paddingLeft: 15,
         color: '#000'
+    },
+    timeStyle: {
+        fontSize: 12,
+        paddingLeft: 15,
+        color: '#ADADAC'
     },
     descriptionStyle: {
         fontSize: 16,
