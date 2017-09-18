@@ -17,7 +17,7 @@ class TasksList extends Component {
     };
 
     componentWillMount() {
-        tasks = RealmController.findAllTasks();
+        tasks = RealmController.findAllTasks().reverse();
     }
 
     render() {
@@ -44,7 +44,7 @@ class RemindersList extends Component {
     };
 
     componentWillMount() {
-        reminders = RealmController.findAllReminders();
+        reminders = RealmController.findAllReminders().reverse();
     }
 
     render() {
@@ -74,12 +74,12 @@ const MainTabsScreen = TabNavigator({
     {
         tabBarOptions: {
             activeTintColor: '#FFF',
-            inactiveTintColor: '#E1E1E1',
+            inactiveTintColor: '#B4B4B4',
             style: {
                 backgroundColor: '#007AFF',
             },
             indicatorStyle: {
-                backgroundColor: '#E1E1E1'
+                backgroundColor: '#B4B4B4'
             }
         }
     }

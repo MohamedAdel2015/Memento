@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Text, View, TouchableOpacity, LayoutAnimation, UIManager, Platform, Image, ToastAndroid } from 'react-native';
 import { Card, CardSection } from './common';
 import PushNotification from 'react-native-push-notification';
+import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
 
 class TaskComponent extends Component {
 
@@ -32,7 +33,6 @@ class TaskComponent extends Component {
     }
 
     toggleDescription() {
-        PushNotification.cancelLocalNotifications({ id: this.props.item.key + '' });
         this.setState({ expanded: !this.state.expanded });
     }
 
@@ -55,12 +55,30 @@ class TaskComponent extends Component {
                             <Text style={{ ...styles.titleStyle, color: font }}>{this.props.item.title}</Text>
                             <Text style={{ ...styles.timeStyle, color: dateFont }}>{this.props.item.taskDate.toString()}</Text>
                         </View>
-                        <TouchableOpacity
-                            style={{ position: 'absolute', right: 10, top: 8, justifyContent: 'center' }}
-                            onPress={() => ToastAndroid.show("Sub Menu", ToastAndroid.SHORT)}
-                        >
-                            <Image style={{ height: 25, width: 25 }} source={more_menu} />
-                        </TouchableOpacity>
+                        <View style={{ position: 'absolute', right: 10, top: 8 }}>
+                            <Menu>
+                                <MenuTrigger>
+                                    <Image style={{ height: 25, width: 25 }} source={more_menu} />
+                                </MenuTrigger>
+                                <MenuOptions>
+                                    <MenuOption onSelect={() => {} } >
+                                        <View style={{ flex: 1, justifyContent: 'center', height: 30 }}>
+                                            <Text style={{ fontSize: 15, marginLeft: 5 }}>Edit</Text>
+                                        </View>
+                                    </MenuOption>
+                                    <MenuOption onSelect={() => PushNotification.cancelLocalNotifications({ id: this.props.item.key + '' })} >
+                                        <View style={{ flex: 1, justifyContent: 'center', height: 30 }}>
+                                            <Text style={{ fontSize: 15, marginLeft: 5 }}>Stop Notifications</Text>
+                                        </View>
+                                    </MenuOption>
+                                    <MenuOption onSelect={() => {} } >
+                                        <View style={{ flex: 1, justifyContent: 'center', height: 30 }}>
+                                            <Text style={{ fontSize: 15, marginLeft: 5, color: 'red' }}>Delete</Text>
+                                        </View>
+                                    </MenuOption>
+                                </MenuOptions>
+                            </Menu>
+                        </View>
                     </CardSection>
                     {this.renderDescription()}
                 </Card>

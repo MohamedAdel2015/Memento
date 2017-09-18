@@ -9,6 +9,7 @@ import SignUpForm from './components/SignUpForm';
 import TaskForm from './components/TaskForm';
 import ReminderForm from './components/ReminderForm';
 import PushNotification from 'react-native-push-notification';
+import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
 
 class Home extends Component {
 
@@ -64,6 +65,35 @@ class Home extends Component {
     }
 }
 
+class Login extends Component {
+
+    constructor() {
+        super();
+        this.navigateToMainScreen = this.navigateToMainScreen.bind(this);
+    }
+
+    static navigationOptions = {
+        title: 'Login',
+        header: null
+    };
+
+    navigateToMainScreen() {
+        const resetAction = NavigationActions.reset({
+            index: 0,
+            actions: [
+                NavigationActions.navigate({ routeName: 'Main' })
+            ]
+        });
+        this.props.navigation.dispatch(resetAction);
+    }
+
+    render() {
+        return(
+            <LoginForm onLoginSuccess={this.navigateToMainScreen}/>
+        );
+    }
+}
+
 class CustomHeader extends Component {
 
     render() {
@@ -71,6 +101,45 @@ class CustomHeader extends Component {
             <View style={styles.headerStyle}>
                 <Image source={require('./images/todo_white.png')} style={styles.logoStyle}/>
                 <Text style={styles.headerTitleStyle}>{this.props.title}</Text>
+            </View>
+        );
+    }
+}
+
+class MainHeaderRight extends Component {
+
+    render() {
+        return(
+            <View style={{flexDirection: 'row'}}>
+                <TouchableOpacity
+                    onPress={() => ToastAndroid.show("Search", ToastAndroid.SHORT)}
+                    style={{ marginRight: 10, marginTop: 2.5 }}
+                >
+                    <Image style={{ height: 25, width: 25 }} source={require('./images/search.png')}/>
+                </TouchableOpacity>
+
+                <View style={{ marginRight: 10 }}>
+                    <Menu>
+                        <MenuTrigger>
+                            <Image style={{ height: 30, width: 30 }} source={require('./images/menu.png')}/>
+                        </MenuTrigger>
+                        <MenuOptions>
+                            <MenuOption onSelect={() => {
+                                const resetAction = NavigationActions.reset({
+                                    index: 0,
+                                    actions: [
+                                        NavigationActions.navigate({ routeName: 'Login' })
+                                    ]
+                                });
+                                this.props.dispatch(resetAction);
+                            }} >
+                                <View style={{ flex: 1, justifyContent: 'center', height: 35 }}>
+                                    <Text style={{ fontSize: 18, marginLeft: 5 }}>Logout</Text>
+                                </View>
+                            </MenuOption>
+                        </MenuOptions>
+                    </Menu>
+                </View>
             </View>
         );
     }
@@ -96,30 +165,18 @@ const styles = {
 
 const App = StackNavigator({
     Home: { screen: Home },
+    Login: { screen: Login },
     Main: {
         screen: MainTabsScreen,
-        navigationOptions: {
-            headerTitle: <CustomHeader title='Memento'/>,
-            headerStyle: {
-                backgroundColor: '#007AFF'
-            },
-            headerRight: (
-                <View style={{flexDirection: 'row'}}>
-                    <TouchableOpacity
-                        onPress={() => ToastAndroid.show("Search", ToastAndroid.SHORT)}
-                        style={{marginRight: 10, marginTop: 2.5}}
-                    >
-                        <Image style={{ height: 25, width: 25 }} source={require('./images/search.png')}/>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                        onPress={() => ToastAndroid.show("Menu", ToastAndroid.SHORT)}
-                        style={{marginRight: 10}}
-                    >
-                        <Image style={{ height: 30, width: 30 }} source={require('./images/menu.png')}/>
-                    </TouchableOpacity>
-                </View>
-            )
+        navigationOptions: ({ navigation }) => {
+            const { dispatch } = navigation;
+            return {
+                headerTitle: <CustomHeader title='Memento'/>,
+                headerStyle: {
+                    backgroundColor: '#007AFF'
+                },
+                headerRight: ( <MainHeaderRight dispatch={dispatch} /> )
+            }
         }
     },
     TaskForm: {

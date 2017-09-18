@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Text, View, TouchableOpacity, LayoutAnimation, UIManager, Platform, Image, ToastAndroid } from 'react-native';
 import { Card, CardSection } from './common';
+import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
 
 class ReminderComponent extends Component {
 
@@ -48,12 +49,25 @@ class ReminderComponent extends Component {
                 <Card>
                     <CardSection style={{ backgroundColor: color }}>
                         <Text style={{ ...styles.titleStyle, color: font }}>{this.props.item.name}</Text>
-                        <TouchableOpacity
-                            style={{ position: 'absolute', top: 5, right: 10, justifyContent: 'center' }}
-                            onPress={() => ToastAndroid.show("Sub Menu", ToastAndroid.SHORT)}
-                        >
-                            <Image style={{ height: 25, width: 25 }} source={more_menu} />
-                        </TouchableOpacity>
+                        <View style={{ position: 'absolute', right: 10, top: 5 }}>
+                            <Menu>
+                                <MenuTrigger>
+                                    <Image style={{ height: 25, width: 25 }} source={more_menu} />
+                                </MenuTrigger>
+                                <MenuOptions>
+                                    <MenuOption onSelect={() => {} } >
+                                        <View style={{ flex: 1, justifyContent: 'center', height: 30 }}>
+                                            <Text style={{ fontSize: 15, marginLeft: 5 }}>Edit</Text>
+                                        </View>
+                                    </MenuOption>
+                                    <MenuOption onSelect={() => {} } >
+                                        <View style={{ flex: 1, justifyContent: 'center', height: 30 }}>
+                                            <Text style={{ fontSize: 15, marginLeft: 5, color: 'red' }}>Delete</Text>
+                                        </View>
+                                    </MenuOption>
+                                </MenuOptions>
+                            </Menu>
+                        </View>
                     </CardSection>
                     {this.renderDescription()}
                 </Card>
