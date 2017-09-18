@@ -19,9 +19,9 @@ const PickerInput = ({ label, items, selectedValue, onValueChange }) => {
 
 const styles = {
     pickerLabelStyle: {
-        fontSize: 18,
+        fontSize: 16,
         paddingLeft: 10,
-        flex: 1
+        flex: 2
     },
     containerStyle: {
         height: (Platform.OS === 'ios') ? 180 : 40,
@@ -32,7 +32,7 @@ const styles = {
     pickerStyle: {
         paddingRight: 5,
         paddingLeft: 5,
-        flex: 2
+        flex: 5
     }
 };
 

@@ -8,6 +8,7 @@ import LoginForm from './components/LoginForm';
 import SignUpForm from './components/SignUpForm';
 import TaskForm from './components/TaskForm';
 import ReminderForm from './components/ReminderForm';
+import PushNotification from 'react-native-push-notification';
 
 class Home extends Component {
 

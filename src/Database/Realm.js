@@ -26,6 +26,8 @@ class RealmController {
     static updateSurrogateKeys() {
         let tasks = RealmController.findAllTasks();
         let reminders = RealmController.findAllReminders();
+        console.log("All Tasks ", tasks);
+        console.log("All Reminders ", reminders);
         if(tasks.length !== 0)
             RealmController.tasksSurrogateKey = tasks[tasks.length - 1].key;
         if(reminders.length !== 0)
@@ -75,6 +77,10 @@ class RealmController {
 
     static findSetting(key) {
         return repository.objects('Settings').filtered(`key="${key}" `).slice();
+    }
+
+    static getNextTaskSurrogateKey() {
+        return (RealmController.tasksSurrogateKey + 1);
     }
 }
 

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Text, View, TouchableOpacity, LayoutAnimation, UIManager, Platform } from 'react-native';
 import { Card, CardSection } from './common';
+import PushNotification from 'react-native-push-notification';
 
 class TaskComponent extends Component {
 
@@ -31,6 +32,7 @@ class TaskComponent extends Component {
     }
 
     toggleDescription() {
+        PushNotification.cancelLocalNotifications({ id: this.props.item.key + '' });
         this.setState({ expanded: !this.state.expanded });
     }
 
