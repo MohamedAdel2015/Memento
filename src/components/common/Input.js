@@ -5,7 +5,12 @@ const Input = ({ label, value, onChangeText, placeholder, secureTextEntry, multi
     const { inputStyle, labelStyle, containerStyle } = styles;
     let height = 45;
     if (multiline) {
-        height = 85;
+        if (numberOfLines === 2) {
+            height = 65;
+        }
+        else {
+            height = 85;
+        }
     }
     return(
         <View style={{ ...containerStyle, height: height }}>

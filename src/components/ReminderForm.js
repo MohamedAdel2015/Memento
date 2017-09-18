@@ -57,7 +57,7 @@ class ReminderForm extends Component {
                         <CardSection>
                             <Input
                                 label="Name"
-                                placeholder="Name of the Thing to Remember"
+                                placeholder="Name of the Thing"
                                 value={this.state.name}
                                 onChangeText={(text) => this.setState({ name: text })}
                             />

@@ -3,6 +3,7 @@ import { Text, View, ToastAndroid, Dimensions, Image, TouchableOpacity } from 'r
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import { Card, CardSection, Input, Button } from './common';
 import { NavigationActions } from 'react-navigation';
+import CheckBox from 'react-native-checkbox';
 import RealmController from '../Database/Realm';
 
 class TaskForm extends Component {
@@ -14,11 +15,15 @@ class TaskForm extends Component {
             description: '',
             date: new Date(),
             isDatePickerVisible: false,
-            isTimePickerVisible: false
+            isTimePickerVisible: false,
+            hasDeadline: false,
+            notifyMe: false
         };
         this.onButtonPress = this.onButtonPress.bind(this);
         this.handleDatePicked = this.handleDatePicked.bind(this);
         this.handleTimePicked = this.handleTimePicked.bind(this);
+        this.onCheckboxStateChanged = this.onCheckboxStateChanged.bind(this);
+        this.renderDateTimeText = this.renderDateTimeText.bind(this);
     }
 
     handleDatePicked(date) {
@@ -31,7 +36,19 @@ class TaskForm extends Component {
 
     onButtonPress() {
         if (this.state.title.length > 0) {
-            RealmController.createTask({ title: this.state.title, description: this.state.description, taskDate: this.state.date });
+            if (this.state.hasDeadline) {
+                RealmController.createTask({
+                    title: this.state.title,
+                    description: this.state.description,
+                    taskDate: this.state.date
+                });
+            }
+            else {
+                RealmController.createTask({
+                    title: this.state.title,
+                    description: this.state.description
+                });
+            }
             const resetAction = NavigationActions.reset({
                 index: 0,
                 actions: [
@@ -45,14 +62,51 @@ class TaskForm extends Component {
         }
     }
 
+    onCheckboxStateChanged(checked) {
+        if(!checked) {
+            this.setState({ hasDeadline: !checked, isDatePickerVisible: true });
+        }
+        else {
+            this.setState({ hasDeadline: !checked });
+        }
+    }
+
+    renderDateTimeText() {
+        if(this.state.hasDeadline) {
+            return(
+                <View>
+                    <TouchableOpacity onPress={() => this.setState({ isDatePickerVisible: true })}>
+                        <CardSection>
+                            <Input
+                                label="Reminder Time"
+                                placeholder="Time"
+                                multiline={true}
+                                numberOfLines = {2}
+                                editable = {false}
+                                value={this.state.date.toString()}
+                            />
+                        </CardSection>
+                    </TouchableOpacity>
+                    <CardSection>
+                        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                            <CheckBox
+                                label='Notify Me At Reminder Time'
+                                checked={this.state.notifyMe}
+                                onChange={(checked) => this.setState({ notifyMe: !checked })}
+                            />
+                        </View>
+                    </CardSection>
+                </View>
+            );
+        }
+    }
+
     render() {
         return (
             <View style={styles.containerStyle}>
                 <Image source={require('../images/background.png')} style={styles.imageStyle}/>
-                <View style={{ flex: 2, justifyContent: 'center', alignItems: 'center' }}>
-                    <Image source={require('../images/todo.png')} style={styles.logoStyle}/>
-                </View>
-                <View style={{ flex: 6 }}>
+
+                <View style={{ flex: 1, marginTop: 5 }}>
                     <Card>
                         <CardSection>
                             <View style={{ flex: 1 }}>
@@ -84,14 +138,16 @@ class TaskForm extends Component {
                         </CardSection>
 
                         <CardSection>
-                            <Input
-                                label="Reminder Time"
-                                placeholder="Time"
-                                value={this.state.date.toString()}
-                                onChangeText={(text) => this.setState({ isDatePickerVisible: true})}
-                                onFocus={() => this.setState({ isDatePickerVisible: true}) }
-                            />
+                            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                                <CheckBox
+                                    label='Add Reminder Time for The Task'
+                                    checked={this.state.hasDeadline}
+                                    onChange={(checked) => this.onCheckboxStateChanged(checked)}
+                                />
+                            </View>
                         </CardSection>
+
+                        {this.renderDateTimeText()}
 
                         <CardSection>
                             <Button onPress={this.onButtonPress}>
@@ -114,7 +170,7 @@ class TaskForm extends Component {
                     is24Hour={false}
                     mode={'time'}
                     onConfirm={this.handleTimePicked}
-                    onCancel={() => this.setState({ isDatePickerVisible: false })}
+                    onCancel={() => this.setState({ isTimePickerVisible: false })}
                 />
             </View>
         );

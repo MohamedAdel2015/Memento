@@ -6,7 +6,7 @@ export default TasksModel = {
         title: 'string',
         description: 'string',
         latestUpdateTimeStamp: 'date',
-        taskDate: 'date',
+        taskDate: {type: 'date', optional: true},
         status: 'int'
     }
 }
