@@ -34,12 +34,16 @@ class RealmController {
         return repository.objects('Tasks').filtered('taskDate <= $0', new Date()).sorted(sortBy).slice();
     }
 
+    static findNoDateTasks() {
+        return repository.objects('Tasks').filtered('taskDate = $0', null).slice();
+    }
+
     static findAllReminders() {
         return repository.objects('Reminders').slice();
     }
 
     static updateSurrogateKeys() {
-        let tasks = RealmController.findAllTasks();
+        /*let tasks = RealmController.findAllTasks();
         let reminders = RealmController.findAllReminders();
         console.log("All Tasks ", tasks);
         console.log("All Reminders ", reminders);
@@ -47,6 +51,16 @@ class RealmController {
             RealmController.tasksSurrogateKey = tasks[tasks.length - 1].key;
         if(reminders.length !== 0)
             RealmController.remindersSurrogateKey = reminders[reminders.length - 1].key;
+        console.log("Current # of Tasks ", RealmController.tasksSurrogateKey);
+        console.log("Current # of Reminders", RealmController.remindersSurrogateKey);*/
+        let taskSurrogateResponse = RealmController.findSetting('tasksSurrogateKey');
+        if(taskSurrogateResponse.length > 0) {
+            RealmController.tasksSurrogateKey = Number(taskSurrogateResponse[0].value);
+        }
+        let reminderSurrogateResponse = RealmController.findSetting('remindersSurrogateKey');
+        if(reminderSurrogateResponse.length > 0) {
+            RealmController.remindersSurrogateKey = Number(reminderSurrogateResponse[0].value);
+        }
         console.log("Current # of Tasks ", RealmController.tasksSurrogateKey);
         console.log("Current # of Reminders", RealmController.remindersSurrogateKey);
     }
@@ -60,6 +74,7 @@ class RealmController {
                 task.status = 0;
                 newTask = repository.create('Tasks', task);
             });
+            RealmController.createSetting({ key: 'tasksSurrogateKey', value: RealmController.tasksSurrogateKey + '' });
             return newTask;
         }
         catch(e){
@@ -76,6 +91,7 @@ class RealmController {
                 reminder.latestUpdateTimeStamp = new Date();
                 newReminder = repository.create('Reminders', reminder);
             });
+            RealmController.createSetting({ key: 'remindersSurrogateKey', value: RealmController.remindersSurrogateKey + '' });
             return newReminder;
         }
         catch(e){
@@ -96,6 +112,18 @@ class RealmController {
 
     static getNextTaskSurrogateKey() {
         return (RealmController.tasksSurrogateKey + 1);
+    }
+
+    static deleteTask(task) {
+        repository.write(() => {
+            repository.delete(task);
+        })
+    }
+
+    static deleteReminder(reminder) {
+        repository.write(() => {
+            repository.delete(reminder);
+        })
     }
 }
 

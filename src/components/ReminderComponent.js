@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Text, View, TouchableOpacity, LayoutAnimation, UIManager, Platform, Image, ToastAndroid } from 'react-native';
 import { Card, CardSection } from './common';
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
+import RealmController from '../Database/Realm';
 
 class ReminderComponent extends Component {
 
@@ -15,6 +16,7 @@ class ReminderComponent extends Component {
         }
         this.renderDescription = this.renderDescription.bind(this);
         this.toggleDescription = this.toggleDescription.bind(this);
+        this.handleDelete = this.handleDelete.bind(this);
     }
 
     componentWillUpdate() {
@@ -33,6 +35,11 @@ class ReminderComponent extends Component {
 
     toggleDescription() {
         this.setState({ expanded: !this.state.expanded });
+    }
+
+    handleDelete() {
+        RealmController.deleteReminder(this.props.item);
+        this.props.onReminderDelete();
     }
 
     render() {
@@ -60,7 +67,7 @@ class ReminderComponent extends Component {
                                             <Text style={{ fontSize: 15, marginLeft: 5 }}>Edit</Text>
                                         </View>
                                     </MenuOption>
-                                    <MenuOption onSelect={() => {} } >
+                                    <MenuOption onSelect={() => this.handleDelete() }>
                                         <View style={{ flex: 1, justifyContent: 'center', height: 30 }}>
                                             <Text style={{ fontSize: 15, marginLeft: 5, color: 'red' }}>Delete</Text>
                                         </View>

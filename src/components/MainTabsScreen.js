@@ -6,30 +6,42 @@ import ReminderItem from './ReminderComponent';
 import FloatingActionButton from './FloatingActionButton';
 import RealmController from '../Database/Realm';
 
-let tasks = [];
-let currentTasks = [];
-let pastTasks = [];
-
 let reminders = [];
 
 class TasksList extends Component {
+
+    constructor() {
+        super();
+        let currentTasks = RealmController.findAllPresentTasks().reverse();
+        let pastTasks = RealmController.findAllPastTasks();
+        let noDateTasks = RealmController.findNoDateTasks();
+        let tasks = currentTasks.concat(noDateTasks).concat(pastTasks);
+        console.log("Returned Tasks: ", tasks);
+        console.log("All Tasks: ", RealmController.findAllTasks());
+        this.state = {
+            tasks: tasks
+        };
+        this.onTaskDelete = this.onTaskDelete.bind(this);
+    }
 
     static navigationOptions = {
         title: 'Tasks',
     };
 
-    componentWillMount() {
-        tasks = RealmController.findAllTasksOrdered().reverse();
-        currentTasks = RealmController.findAllPresentTasks().reverse();
-        pastTasks = RealmController.findAllPastTasks().reverse();
+    onTaskDelete() {
+        let currentTasks = RealmController.findAllPresentTasks().reverse();
+        let pastTasks = RealmController.findAllPastTasks();
+        let noDateTasks = RealmController.findNoDateTasks();
+        let tasks = currentTasks.concat(noDateTasks).concat(pastTasks);
+        this.setState({ tasks: tasks });
     }
 
     render() {
         return (
             <View style={styles.tabViewStyle}>
                 <FlatList
-                    data={tasks}
-                    renderItem={({item}) => <TaskItem item={item}/> }
+                    data={this.state.tasks}
+                    renderItem={({item}) => <TaskItem item={item} onTaskDelete={this.onTaskDelete}/> }
                 />
                 <FloatingActionButton onPress={() => this.props.navigation.navigate('TaskForm')}/>
             </View>
@@ -41,22 +53,28 @@ class RemindersList extends Component {
 
     constructor() {
         super();
+        let reminders = RealmController.findAllReminders().reverse();
+        this.state = {
+            reminders: reminders
+        };
+        this.onReminderDelete = this.onReminderDelete.bind(this);
+    }
+
+    onReminderDelete() {
+        let reminders = RealmController.findAllReminders().reverse();
+        this.setState({ reminders: reminders });
     }
 
     static navigationOptions = {
         title: 'Forgettable Things',
     };
 
-    componentWillMount() {
-        reminders = RealmController.findAllReminders().reverse();
-    }
-
     render() {
         return (
             <View style={styles.tabViewStyle}>
                 <FlatList
-                    data={reminders}
-                    renderItem={({item}) => <ReminderItem item={item}/> }
+                    data={this.state.reminders}
+                    renderItem={({item}) => <ReminderItem item={item} onReminderDelete={this.onReminderDelete}/> }
                 />
                 <FloatingActionButton onPress={() => this.props.navigation.navigate('ReminderForm')}/>
             </View>
@@ -67,7 +85,8 @@ class RemindersList extends Component {
 const styles = {
     tabViewStyle: {
         flex: 1,
-        backgroundColor: '#FFF'
+        marginTop: 5,
+        marginBottom: 5
     }
 };
 

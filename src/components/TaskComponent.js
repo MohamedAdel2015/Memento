@@ -4,16 +4,22 @@ import { Card, CardSection } from './common';
 import PushNotification from 'react-native-push-notification';
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
 import moment from 'moment';
+import RealmController from '../Database/Realm';
 
 function getDateFormat(date) {
-    return moment(date).calendar(null, {
-        sameDay: '[Today] DD/MM/YYYY [at] h:mm a',
-        nextDay: '[Tomorrow] DD/MM/YYYY [at] h:mm a',
-        nextWeek: '[Next] dddd DD/MM/YYYY [at] h:mm a',
-        lastDay: '[Yesterday] DD/MM/YYYY [at] h:mm a',
-        lastWeek: '[Last] dddd DD/MM/YYYY [at] h:mm a',
-        sameElse: 'dddd DD/MM/YYYY [at] h:mm a'
-    });
+    if (date) {
+        return moment(date).calendar(null, {
+            sameDay: '[Today] DD/MM/YYYY [at] h:mm a',
+            nextDay: '[Tomorrow] DD/MM/YYYY [at] h:mm a',
+            nextWeek: '[Next] dddd DD/MM/YYYY [at] h:mm a',
+            lastDay: '[Yesterday] DD/MM/YYYY [at] h:mm a',
+            lastWeek: '[Last] dddd DD/MM/YYYY [at] h:mm a',
+            sameElse: 'dddd DD/MM/YYYY [at] h:mm a'
+        });
+    }
+    else {
+        return "Task has No Reminder Date";
+    }
 }
 
 class TaskComponent extends Component {
@@ -28,6 +34,7 @@ class TaskComponent extends Component {
         }
         this.renderDescription = this.renderDescription.bind(this);
         this.toggleDescription = this.toggleDescription.bind(this);
+        this.handleDelete = this.handleDelete.bind(this);
     }
 
     componentWillUpdate() {
@@ -48,27 +55,48 @@ class TaskComponent extends Component {
         this.setState({ expanded: !this.state.expanded });
     }
 
+    handleDelete() {
+        PushNotification.cancelLocalNotifications({ id: this.props.item.key + '' });
+        RealmController.deleteTask(this.props.item);
+        this.props.onTaskDelete();
+    }
+
     render() {
         let color = '#FFF';
         let font = '#000';
         let dateFont = '#ADADAC';
         let more_menu = require('../images/more_menu.png');
+        let thumbnail_image = require('../images/green-alarm.png');
         if (this.state.expanded) {
             color = '#00b3ff';
             font = '#FFF';
             dateFont = '#ECECEB';
             more_menu = require('../images/more_menu_white.png');
         }
-        if (moment().diff(this.props.item.taskDate) > 0) {
+        if (!this.props.item.taskDate) {
+            if (this.state.expanded) {
+                thumbnail_image = require('../images/no_time_white.png');
+            }
+            else {
+                thumbnail_image = require('../images/no_time_black.png');
+            }
+        }
+        else if (moment().diff(this.props.item.taskDate) > 0) {
             dateFont = 'red';
+            thumbnail_image = require('../images/red-alarm.png');
         }
         return(
             <TouchableOpacity onPress={this.toggleDescription}>
                 <Card>
                     <CardSection style={{ backgroundColor: color }}>
-                        <View>
-                            <Text style={{ ...styles.titleStyle, color: font }}>{this.props.item.title}</Text>
-                            <Text style={{ ...styles.timeStyle, color: dateFont }}>{getDateFormat(this.props.item.taskDate)}</Text>
+                        <View style={{ flex: 1, flexDirection: 'row' }}>
+                            <View style={{ marginLeft: 5, alignItems: 'center', justifyContent: 'center' }}>
+                                <Image source={thumbnail_image} style={{ height:32, width: 32 }}/>
+                            </View>
+                            <View>
+                                <Text style={{ ...styles.titleStyle, color: font }}>{this.props.item.title}</Text>
+                                <Text style={{ ...styles.timeStyle, color: dateFont }}>{getDateFormat(this.props.item.taskDate)}</Text>
+                            </View>
                         </View>
                         <View style={{ position: 'absolute', right: 10, top: 8 }}>
                             <Menu>
@@ -86,7 +114,7 @@ class TaskComponent extends Component {
                                             <Text style={{ fontSize: 15, marginLeft: 5 }}>Stop Notifications</Text>
                                         </View>
                                     </MenuOption>
-                                    <MenuOption onSelect={() => {} } >
+                                    <MenuOption onSelect={() => this.handleDelete() } >
                                         <View style={{ flex: 1, justifyContent: 'center', height: 30 }}>
                                             <Text style={{ fontSize: 15, marginLeft: 5, color: 'red' }}>Delete</Text>
                                         </View>
