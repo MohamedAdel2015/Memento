@@ -19,6 +19,21 @@ class RealmController {
         return repository.objects('Tasks').slice();
     }
 
+    static findAllTasksOrdered() {
+        const sortBy =  [['taskDate', true]];
+        return repository.objects('Tasks').sorted(sortBy).slice();
+    }
+
+    static findAllPresentTasks() {
+        const sortBy =  [['taskDate', true]];
+        return repository.objects('Tasks').filtered('taskDate > $0', new Date()).sorted(sortBy).slice();
+    }
+
+    static findAllPastTasks() {
+        const sortBy =  [['taskDate', true]];
+        return repository.objects('Tasks').filtered('taskDate <= $0', new Date()).sorted(sortBy).slice();
+    }
+
     static findAllReminders() {
         return repository.objects('Reminders').slice();
     }

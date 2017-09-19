@@ -3,6 +3,18 @@ import { Text, View, TouchableOpacity, LayoutAnimation, UIManager, Platform, Ima
 import { Card, CardSection } from './common';
 import PushNotification from 'react-native-push-notification';
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
+import moment from 'moment';
+
+function getDateFormat(date) {
+    return moment(date).calendar(null, {
+        sameDay: '[Today] DD/MM/YYYY [at] h:mm a',
+        nextDay: '[Tomorrow] DD/MM/YYYY [at] h:mm a',
+        nextWeek: '[Next] dddd DD/MM/YYYY [at] h:mm a',
+        lastDay: '[Yesterday] DD/MM/YYYY [at] h:mm a',
+        lastWeek: '[Last] dddd DD/MM/YYYY [at] h:mm a',
+        sameElse: 'dddd DD/MM/YYYY [at] h:mm a'
+    });
+}
 
 class TaskComponent extends Component {
 
@@ -47,13 +59,16 @@ class TaskComponent extends Component {
             dateFont = '#ECECEB';
             more_menu = require('../images/more_menu_white.png');
         }
+        if (moment().diff(this.props.item.taskDate) > 0) {
+            dateFont = 'red';
+        }
         return(
             <TouchableOpacity onPress={this.toggleDescription}>
                 <Card>
                     <CardSection style={{ backgroundColor: color }}>
                         <View>
                             <Text style={{ ...styles.titleStyle, color: font }}>{this.props.item.title}</Text>
-                            <Text style={{ ...styles.timeStyle, color: dateFont }}>{this.props.item.taskDate.toString()}</Text>
+                            <Text style={{ ...styles.timeStyle, color: dateFont }}>{getDateFormat(this.props.item.taskDate)}</Text>
                         </View>
                         <View style={{ position: 'absolute', right: 10, top: 8 }}>
                             <Menu>

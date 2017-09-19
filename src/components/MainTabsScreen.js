@@ -7,6 +7,8 @@ import FloatingActionButton from './FloatingActionButton';
 import RealmController from '../Database/Realm';
 
 let tasks = [];
+let currentTasks = [];
+let pastTasks = [];
 
 let reminders = [];
 
@@ -17,7 +19,9 @@ class TasksList extends Component {
     };
 
     componentWillMount() {
-        tasks = RealmController.findAllTasks().reverse();
+        tasks = RealmController.findAllTasksOrdered().reverse();
+        currentTasks = RealmController.findAllPresentTasks().reverse();
+        pastTasks = RealmController.findAllPastTasks().reverse();
     }
 
     render() {
@@ -74,12 +78,12 @@ const MainTabsScreen = TabNavigator({
     {
         tabBarOptions: {
             activeTintColor: '#FFF',
-            inactiveTintColor: '#B4B4B4',
+            inactiveTintColor: '#D0D0D0',
             style: {
                 backgroundColor: '#007AFF',
             },
             indicatorStyle: {
-                backgroundColor: '#B4B4B4'
+                backgroundColor: '#D0D0D0'
             }
         }
     }
