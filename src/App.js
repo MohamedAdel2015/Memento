@@ -181,22 +181,76 @@ const App = StackNavigator({
     },
     TaskForm: {
         screen: TaskForm,
-        navigationOptions: {
-            headerTitle: 'Add Task',
-            headerStyle: {
-                backgroundColor: '#007AFF'
-            },
-            headerTintColor: '#FFF'
+        navigationOptions: ({ navigation }) => {
+            const { dispatch } = navigation;
+            return {
+                headerTitle: 'Add Task',
+                headerStyle: {
+                    backgroundColor: '#007AFF'
+                },
+                headerTintColor: '#FFF',
+                headerRight: (
+                    <View style={{ marginRight: 10 }}>
+                        <Menu>
+                            <MenuTrigger>
+                                <Image style={{ height: 30, width: 30 }} source={require('./images/menu.png')}/>
+                            </MenuTrigger>
+                            <MenuOptions>
+                                <MenuOption onSelect={() => {
+                                    const resetAction = NavigationActions.reset({
+                                        index: 0,
+                                        actions: [
+                                            NavigationActions.navigate({ routeName: 'Login' })
+                                        ]
+                                    });
+                                    dispatch(resetAction);
+                                }} >
+                                    <View style={{ flex: 1, justifyContent: 'center', height: 35 }}>
+                                        <Text style={{ fontSize: 18, marginLeft: 5 }}>Logout</Text>
+                                    </View>
+                                </MenuOption>
+                            </MenuOptions>
+                        </Menu>
+                    </View>
+                )
+            }
         }
     },
     ReminderForm: {
         screen: ReminderForm,
-        navigationOptions: {
-            headerTitle: 'Add Forgettable Thing',
-            headerStyle: {
-                backgroundColor: '#007AFF'
-            },
-            headerTintColor: '#FFF'
+        navigationOptions: ({ navigation }) => {
+            const { dispatch } = navigation;
+            return {
+                headerTitle: 'Add Forgettable Thing',
+                headerStyle: {
+                    backgroundColor: '#007AFF'
+                },
+                headerTintColor: '#FFF',
+                headerRight: (
+                    <View style={{ marginRight: 10 }}>
+                        <Menu>
+                            <MenuTrigger>
+                                <Image style={{ height: 30, width: 30 }} source={require('./images/menu.png')}/>
+                            </MenuTrigger>
+                            <MenuOptions>
+                                <MenuOption onSelect={() => {
+                                    const resetAction = NavigationActions.reset({
+                                        index: 0,
+                                        actions: [
+                                            NavigationActions.navigate({ routeName: 'Login' })
+                                        ]
+                                    });
+                                    dispatch(resetAction);
+                                }} >
+                                    <View style={{ flex: 1, justifyContent: 'center', height: 35 }}>
+                                        <Text style={{ fontSize: 18, marginLeft: 5 }}>Logout</Text>
+                                    </View>
+                                </MenuOption>
+                            </MenuOptions>
+                        </Menu>
+                    </View>
+                )
+            }
         }
     }
 });

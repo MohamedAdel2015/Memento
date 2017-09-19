@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image, TouchableOpacity, ToastAndroid, Dimensions } from 'react-native';
+import { View, Text, Image, TouchableOpacity, ToastAndroid, Dimensions, ScrollView } from 'react-native';
 import { Card, CardSection, Input, Button } from './common';
 import { NavigationActions } from 'react-navigation';
 import RealmController from '../Database/Realm';
@@ -38,46 +38,51 @@ class ReminderForm extends Component {
         return (
             <View style={styles.containerStyle}>
                 <Image source={require('../images/background.png')} style={styles.imageStyle}/>
-                <View style={{ flex: 2, justifyContent: 'center', alignItems: 'center' }}>
+                <View style={{ flex: 2, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
                     <Image source={require('../images/todo.png')} style={styles.logoStyle}/>
+                    <Text style={styles.titleStyle}>Memento</Text>
                 </View>
-                <View style={{ flex: 6 }}>
-                    <Card>
-                        <CardSection>
-                            <View style={{ flex: 1 }}>
-                                <Text style={styles.welcomeTextStyle}>
-                                    Add Your Forgettable Things
-                                </Text>
-                                <Text style={styles.secureTextStyle}>
-                                    Completely Secure (All Data Saved Locally)
-                                </Text>
-                            </View>
-                        </CardSection>
+                <View style={{ flex: 7 }}>
+                    <ScrollView style={{ flex: 1 }}>
+                        <View style={{ flex: 1 }}>
+                            <Card>
+                                <CardSection>
+                                    <View style={{ flex: 1 }}>
+                                        <Text style={styles.welcomeTextStyle}>
+                                            Add Your Forgettable Things
+                                        </Text>
+                                        <Text style={styles.secureTextStyle}>
+                                            Completely Secure (All Data Saved Locally)
+                                        </Text>
+                                    </View>
+                                </CardSection>
 
-                        <CardSection>
-                            <Input
-                                label="Name"
-                                placeholder="Name of the Thing"
-                                value={this.state.name}
-                                onChangeText={(text) => this.setState({ name: text })}
-                            />
-                        </CardSection>
+                                <CardSection>
+                                    <Input
+                                        label="Name"
+                                        placeholder="Name of the Thing"
+                                        value={this.state.name}
+                                        onChangeText={(text) => this.setState({ name: text })}
+                                    />
+                                </CardSection>
 
-                        <CardSection>
-                            <Input
-                                label="Value"
-                                placeholder="Value to Remember"
-                                value={this.state.value}
-                                onChangeText={(text) => this.setState({ value: text })}
-                            />
-                        </CardSection>
+                                <CardSection>
+                                    <Input
+                                        label="Value"
+                                        placeholder="Value to Remember"
+                                        value={this.state.value}
+                                        onChangeText={(text) => this.setState({ value: text })}
+                                    />
+                                </CardSection>
 
-                        <CardSection>
-                            <Button onPress={this.onButtonPress}>
-                                Add Thing
-                            </Button>
-                        </CardSection>
-                    </Card>
+                                <CardSection>
+                                    <Button onPress={this.onButtonPress}>
+                                        Add Thing
+                                    </Button>
+                                </CardSection>
+                            </Card>
+                        </View>
+                    </ScrollView>
                 </View>
             </View>
         );
@@ -101,8 +106,9 @@ const styles = {
         alignSelf: 'center'
     },
     logoStyle: {
-        width: Dimensions.get('window').width/3,
-        height: Dimensions.get('window').width/3,
+        width: Dimensions.get('window').width/5,
+        height: Dimensions.get('window').width/5,
+        marginRight: 5
     },
     welcomeTextStyle: {
         fontSize: 18,

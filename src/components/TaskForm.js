@@ -170,61 +170,66 @@ class TaskForm extends Component {
         return (
             <View style={styles.containerStyle}>
                 <Image source={require('../images/background.png')} style={styles.imageStyle}/>
+                <View style={{ flex: 2, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                    <Image source={require('../images/todo.png')} style={styles.logoStyle}/>
+                    <Text style={styles.titleStyle}>Memento</Text>
+                </View>
+                <View style={{ flex: 7 }}>
+                    <ScrollView style={{ flex: 1 }}>
+                        <View style={{ flex: 1, marginTop: 5 }}>
+                            <Card>
+                                <CardSection>
+                                    <View style={{ flex: 1 }}>
+                                        <Text style={styles.welcomeTextStyle}>
+                                            Add Task
+                                        </Text>
+                                    </View>
+                                </CardSection>
 
-                <ScrollView style={{ flex: 1 }}>
-                    <View style={{ flex: 1, marginTop: 5 }}>
-                        <Card>
-                            <CardSection>
-                                <View style={{ flex: 1 }}>
-                                    <Text style={styles.welcomeTextStyle}>
-                                        Add Task
-                                    </Text>
-                                </View>
-                            </CardSection>
-
-                            <CardSection>
-                                <Input
-                                    label="Title"
-                                    placeholder="Task Title"
-                                    value={this.state.title}
-                                    onChangeText={(text) => this.setState({ title: text })}
-                                />
-                            </CardSection>
-
-                            <CardSection>
-                                <Input
-                                    multiline={true}
-                                    numberOfLines = {3}
-                                    editable = {true}
-                                    label="Description"
-                                    placeholder="Task Description"
-                                    value={this.state.description}
-                                    onChangeText={(text) => this.setState({ description: text })}
-                                />
-                            </CardSection>
-
-                            <CardSection>
-                                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                                    <CheckBox
-                                        label='Add Reminder Time for The Task'
-                                        checked={this.state.hasDeadline}
-                                        onChange={(checked) => this.onCheckboxStateChanged(checked)}
+                                <CardSection>
+                                    <Input
+                                        label="Title"
+                                        placeholder="Task Title"
+                                        value={this.state.title}
+                                        onChangeText={(text) => this.setState({ title: text })}
                                     />
-                                </View>
-                            </CardSection>
+                                </CardSection>
 
-                            {this.renderDateTimeText()}
+                                <CardSection>
+                                    <Input
+                                        multiline={true}
+                                        numberOfLines = {3}
+                                        editable = {true}
+                                        label="Description"
+                                        placeholder="Task Description"
+                                        value={this.state.description}
+                                        onChangeText={(text) => this.setState({ description: text })}
+                                    />
+                                </CardSection>
 
-                            {this.renderRepeatNotification()}
+                                <CardSection>
+                                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                                        <CheckBox
+                                            label='Add Reminder Time for The Task'
+                                            checked={this.state.hasDeadline}
+                                            onChange={(checked) => this.onCheckboxStateChanged(checked)}
+                                        />
+                                    </View>
+                                </CardSection>
 
-                            <CardSection>
-                                <Button onPress={this.onButtonPress}>
-                                    Add Task
-                                </Button>
-                            </CardSection>
-                        </Card>
-                    </View>
-                </ScrollView>
+                                {this.renderDateTimeText()}
+
+                                {this.renderRepeatNotification()}
+
+                                <CardSection>
+                                    <Button onPress={this.onButtonPress}>
+                                        Add Task
+                                    </Button>
+                                </CardSection>
+                            </Card>
+                        </View>
+                    </ScrollView>
+                </View>
                 <DateTimePicker
                     date={this.state.date}
                     isVisible={this.state.isDatePickerVisible}
@@ -263,8 +268,9 @@ const styles = {
         alignSelf: 'center'
     },
     logoStyle: {
-        width: Dimensions.get('window').width/3,
-        height: Dimensions.get('window').width/3,
+        width: Dimensions.get('window').width/5,
+        height: Dimensions.get('window').width/5,
+        marginRight: 5
     },
     welcomeTextStyle: {
         fontSize: 18,

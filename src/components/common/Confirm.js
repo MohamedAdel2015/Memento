@@ -9,7 +9,7 @@ const Confirm = ({ children, visible, onAccept, onDecline }) => {
     return(
         <Modal
             visible={visible}
-            animationType='slide'
+            animationType='fade'
             transparent
             onRequestClose={() => {}}
         >
