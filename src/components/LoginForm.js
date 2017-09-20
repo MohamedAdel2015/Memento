@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, Image, Dimensions } from 'react-native';
 import { Button, Card, CardSection, Input } from './common';
 import RealmController from '../Database/Realm';
+import Icon from 'react-native-vector-icons/SimpleLineIcons';
 
 class LoginForm extends Component {
 
@@ -55,7 +56,9 @@ class LoginForm extends Component {
                         </CardSection>
                         <Text style={styles.errorTextStyle}>{this.state.error}</Text>
                         <CardSection>
-                            <Button onPress={this.onLoginPressed}>Login</Button>
+                            <Button onPress={this.onLoginPressed}>
+                                <Icon name="login" style={{ fontSize: 16 }}/> Login
+                            </Button>
                         </CardSection>
                     </Card>
                 </View>

@@ -45,11 +45,20 @@ class TaskComponent extends Component {
 
     renderDescription() {
         if (this.state.expanded) {
-            return(
-                <CardSection>
-                    <Text style={styles.descriptionStyle}>{this.props.item.description}</Text>
-                </CardSection>
-            );
+            if(this.props.item.description.length > 0) {
+                return (
+                    <CardSection>
+                        <Text style={styles.descriptionStyle}>{this.props.item.description}</Text>
+                    </CardSection>
+                );
+            }
+            else {
+                return (
+                    <CardSection>
+                        <Text style={styles.descriptionStyle}>No Description</Text>
+                    </CardSection>
+                );
+            }
         }
     }
 
@@ -90,6 +99,9 @@ class TaskComponent extends Component {
         else if (moment().diff(this.props.item.taskDate) > 0) {
             dateFont = 'red';
             thumbnail_image = require('../images/red-alarm.png');
+        }
+        else {
+            dateFont = 'green';
         }
         return(
             <TouchableOpacity onPress={this.toggleDescription}>

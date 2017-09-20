@@ -2,14 +2,15 @@ import React, { Component } from 'react';
 import { View, Text, Image, TouchableOpacity, ToastAndroid } from 'react-native';
 import { StackNavigator, NavigationActions } from 'react-navigation';
 import SplashScreen from './components/SplashScreen';
-import MainTabsScreen from './components/MainTabsScreen';
+import TasksTabsScreen from './components/TasksTabsScreen';
 import RealmController from './Database/Realm';
 import LoginForm from './components/LoginForm';
 import SignUpForm from './components/SignUpForm';
 import TaskForm from './components/TaskForm';
 import ReminderForm from './components/ReminderForm';
-import PushNotification from 'react-native-push-notification';
+import RemindersList from './components/RemindersList';
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
+import ComIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 class Home extends Component {
 
@@ -134,7 +135,9 @@ class MainHeaderRight extends Component {
                                 this.props.dispatch(resetAction);
                             }} >
                                 <View style={{ flex: 1, justifyContent: 'center', height: 35 }}>
-                                    <Text style={{ fontSize: 18, marginLeft: 5 }}>Logout</Text>
+                                    <Text style={{ fontSize: 18, marginLeft: 5, color: '#000' }}>
+                                        <ComIcon name="logout" style={{ fontSize: 18 }} /> Logout
+                                    </Text>
                                 </View>
                             </MenuOption>
                         </MenuOptions>
@@ -167,14 +170,28 @@ const App = StackNavigator({
     Home: { screen: Home },
     Login: { screen: Login },
     Main: {
-        screen: MainTabsScreen,
+        screen: TasksTabsScreen,
         navigationOptions: ({ navigation }) => {
             const { dispatch } = navigation;
             return {
-                headerTitle: <CustomHeader title='Memento'/>,
+                headerTitle: <CustomHeader title='Tasks'/>,
                 headerStyle: {
                     backgroundColor: '#007AFF'
                 },
+                headerRight: ( <MainHeaderRight dispatch={dispatch} /> )
+            }
+        }
+    },
+    Reminders: {
+        screen: RemindersList,
+        navigationOptions: ({ navigation }) => {
+            const { dispatch } = navigation;
+            return {
+                headerTitle: <CustomHeader title='Forgettable Things'/>,
+                headerStyle: {
+                    backgroundColor: '#007AFF'
+                },
+                headerTintColor: '#FFF',
                 headerRight: ( <MainHeaderRight dispatch={dispatch} /> )
             }
         }
@@ -206,7 +223,9 @@ const App = StackNavigator({
                                     dispatch(resetAction);
                                 }} >
                                     <View style={{ flex: 1, justifyContent: 'center', height: 35 }}>
-                                        <Text style={{ fontSize: 18, marginLeft: 5 }}>Logout</Text>
+                                        <Text style={{ fontSize: 18, marginLeft: 5, color: '#000' }}>
+                                            <ComIcon name="logout" style={{ fontSize: 18 }} /> Logout
+                                        </Text>
                                     </View>
                                 </MenuOption>
                             </MenuOptions>
@@ -243,7 +262,9 @@ const App = StackNavigator({
                                     dispatch(resetAction);
                                 }} >
                                     <View style={{ flex: 1, justifyContent: 'center', height: 35 }}>
-                                        <Text style={{ fontSize: 18, marginLeft: 5 }}>Logout</Text>
+                                        <Text style={{ fontSize: 18, marginLeft: 5, color: '#000' }}>
+                                            <ComIcon name="logout" style={{ fontSize: 18 }} /> Logout
+                                        </Text>
                                     </View>
                                 </MenuOption>
                             </MenuOptions>

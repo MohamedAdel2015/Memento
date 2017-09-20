@@ -5,6 +5,7 @@ import TaskItem from './TaskComponent';
 import ReminderItem from './ReminderComponent';
 import FloatingActionButton from './FloatingActionButton';
 import RealmController from '../Database/Realm';
+import ActionButton from 'react-native-action-button';
 
 let reminders = [];
 
@@ -16,8 +17,6 @@ class TasksList extends Component {
         let pastTasks = RealmController.findAllPastTasks();
         let noDateTasks = RealmController.findNoDateTasks();
         let tasks = currentTasks.concat(noDateTasks).concat(pastTasks);
-        console.log("Returned Tasks: ", tasks);
-        console.log("All Tasks: ", RealmController.findAllTasks());
         this.state = {
             tasks: tasks
         };
@@ -43,7 +42,10 @@ class TasksList extends Component {
                     data={this.state.tasks}
                     renderItem={({item}) => <TaskItem item={item} onTaskDelete={this.onTaskDelete}/> }
                 />
-                <FloatingActionButton onPress={() => this.props.navigation.navigate('TaskForm')}/>
+                <ActionButton
+                    buttonColor='rgba(0, 122, 255, 1)'
+                    onPress={() => this.props.navigation.navigate('TaskForm')}
+                />
             </View>
         );
     }
@@ -76,7 +78,10 @@ class RemindersList extends Component {
                     data={this.state.reminders}
                     renderItem={({item}) => <ReminderItem item={item} onReminderDelete={this.onReminderDelete}/> }
                 />
-                <FloatingActionButton onPress={() => this.props.navigation.navigate('ReminderForm')}/>
+                <ActionButton
+                    buttonColor='rgba(0, 122, 255, 1)'
+                    onPress={() => this.props.navigation.navigate('ReminderForm')}
+                />
             </View>
         );
     }
