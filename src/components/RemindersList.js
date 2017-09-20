@@ -21,6 +21,7 @@ class RemindersList extends Component {
         }
         this.onReminderDelete = this.onReminderDelete.bind(this);
         this.onNavigateToTasks = this.onNavigateToTasks.bind(this);
+        this.onReminderEdit = this.onReminderEdit.bind(this);
     }
 
     componentWillUpdate() {
@@ -31,6 +32,10 @@ class RemindersList extends Component {
         let reminders = RealmController.findAllReminders();
         console.log("Reminders ", reminders);
         this.setState({ reminders: reminders });
+    }
+
+    onReminderEdit(item) {
+        this.props.navigation.navigate('ReminderForm', { item: item });
     }
 
     static navigationOptions = {
@@ -52,7 +57,7 @@ class RemindersList extends Component {
             <View style={styles.tabViewStyle}>
                 <FlatList
                     data={this.state.reminders}
-                    renderItem={({item}) => <ReminderItem item={item} onReminderDelete={this.onReminderDelete}/> }
+                    renderItem={({item}) => <ReminderItem item={item} onReminderEdit={this.onReminderEdit} onReminderDelete={this.onReminderDelete}/> }
                 />
 
                 <ActionButton buttonColor="#007AFF" icon={<Icon name="md-add" style={styles.actionButtonIcon}/>} spacing={8} offsetX={30} offsetY={20} useNativeFeedback={false}>

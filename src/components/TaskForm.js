@@ -243,6 +243,7 @@ class TaskForm extends Component {
                     isVisible={this.state.isDatePickerVisible}
                     is24Hour={false}
                     mode={'date'}
+                    minimumDate={new Date()}
                     onConfirm={this.handleDatePicked}
                     onCancel={() => this.setState({ isDatePickerVisible: false })}
                 />
@@ -251,6 +252,7 @@ class TaskForm extends Component {
                     isVisible={this.state.isTimePickerVisible}
                     is24Hour={false}
                     mode={'time'}
+                    minimumDate={new Date()}
                     onConfirm={this.handleTimePicked}
                     onCancel={() => this.setState({ isTimePickerVisible: false })}
                 />

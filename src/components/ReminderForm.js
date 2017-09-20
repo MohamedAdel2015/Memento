@@ -10,14 +10,36 @@ class ReminderForm extends Component {
         super();
         this.state = {
             name: '',
-            value: ''
+            value: '',
+            isEdit: false
         };
         this.onButtonPress = this.onButtonPress.bind(this);
     }
 
+    componentWillMount() {
+        let name = '', value = '', isEdit = false;
+        const { params } = this.props.navigation.state;
+        console.log("Params ", params);
+        if (params) {
+            if (params.item) {
+                name = params.item.name;
+                value = params.item.value;
+                isEdit = true;
+                this.setState({ name, value, isEdit });
+            }
+        }
+    }
+
     onButtonPress() {
         if (this.state.name.length > 0 && this.state.value.length > 0) {
-            RealmController.createReminder({ name: this.state.name, value: this.state.value });
+            if (this.state.isEdit) {
+                const { item } = this.props.navigation.state.params;
+                let newItem = { key: item.key, name: this.state.name, value: this.state.value };
+                RealmController.updateReminder(newItem);
+            }
+            else {
+                RealmController.createReminder({name: this.state.name, value: this.state.value});
+            }
             const resetAction = NavigationActions.reset({
                 index: 0,
                 actions: [
@@ -49,7 +71,7 @@ class ReminderForm extends Component {
                                 <CardSection>
                                     <View style={{ flex: 1 }}>
                                         <Text style={styles.welcomeTextStyle}>
-                                            Add Your Forgettable Things
+                                            {this.state.isEdit ? "Edit Forgettable Thing" : "Add Your Forgettable Things"}
                                         </Text>
                                         <Text style={styles.secureTextStyle}>
                                             Completely Secure (All Data Saved Locally)
@@ -77,7 +99,7 @@ class ReminderForm extends Component {
 
                                 <CardSection>
                                     <Button onPress={this.onButtonPress}>
-                                        Add Thing
+                                        {this.state.isEdit ? "Edit Thing" : "Add Thing"}
                                     </Button>
                                 </CardSection>
                             </Card>

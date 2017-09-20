@@ -69,37 +69,25 @@ class RealmController {
 
     static createTask(task) {
         let newTask;
-        try{
-            repository.write(() => {
-                task.key = ++RealmController.tasksSurrogateKey;
-                task.latestUpdateTimeStamp = new Date();
-                task.status = 0;
-                newTask = repository.create('Tasks', task);
-            });
-            RealmController.createSetting({ key: 'tasksSurrogateKey', value: RealmController.tasksSurrogateKey + '' });
-            return newTask;
-        }
-        catch(e){
-            console.log("error create task ", e);
-            --RealmController.tasksSurrogateKey;
-        }
+        repository.write(() => {
+            task.key = ++RealmController.tasksSurrogateKey;
+            task.latestUpdateTimeStamp = new Date();
+            task.status = 0;
+            newTask = repository.create('Tasks', task);
+        });
+        RealmController.createSetting({ key: 'tasksSurrogateKey', value: RealmController.tasksSurrogateKey + '' });
+        return newTask;
     }
 
     static createReminder(reminder) {
         let newReminder;
-        try{
-            repository.write(() => {
-                reminder.key = ++RealmController.remindersSurrogateKey;
-                reminder.latestUpdateTimeStamp = new Date();
-                newReminder = repository.create('Reminders', reminder);
-            });
-            RealmController.createSetting({ key: 'remindersSurrogateKey', value: RealmController.remindersSurrogateKey + '' });
-            return newReminder;
-        }
-        catch(e){
-            console.log("error create reminder ", e);
-            --RealmController.remindersSurrogateKey;
-        }
+        repository.write(() => {
+            reminder.key = ++RealmController.remindersSurrogateKey;
+            reminder.latestUpdateTimeStamp = new Date();
+            newReminder = repository.create('Reminders', reminder);
+        });
+        RealmController.createSetting({ key: 'remindersSurrogateKey', value: RealmController.remindersSurrogateKey + '' });
+        return newReminder;
     }
 
     static createSetting(setting) {
@@ -125,6 +113,13 @@ class RealmController {
     static deleteReminder(reminder) {
         repository.write(() => {
             repository.delete(reminder);
+        })
+    }
+
+    static updateReminder(reminder) {
+        repository.write(() => {
+            reminder.latestUpdateTimeStamp = new Date();
+            repository.create('Reminders', reminder, true);
         })
     }
 }
