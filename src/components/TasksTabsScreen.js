@@ -47,7 +47,7 @@ class CurrentTasks extends Component {
         const resetAction = NavigationActions.reset({
             index: 0,
             actions: [
-                NavigationActions.navigate({ routeName: 'Reminders' })
+                NavigationActions.navigate({ routeName: 'Reminders', params: {activeTab: 'CurrentTasks'} })
             ]
         });
         this.props.screenProps.navigation.dispatch(resetAction);
@@ -126,7 +126,7 @@ class PastTasks extends Component {
         const resetAction = NavigationActions.reset({
             index: 0,
             actions: [
-                NavigationActions.navigate({ routeName: 'Reminders' })
+                NavigationActions.navigate({ routeName: 'Reminders', params: {activeTab: 'PastTasks'} })
             ]
         });
         this.props.screenProps.navigation.dispatch(resetAction);
@@ -205,7 +205,7 @@ class NoDateTasks extends Component {
         const resetAction = NavigationActions.reset({
             index: 0,
             actions: [
-                NavigationActions.navigate({ routeName: 'Reminders' })
+                NavigationActions.navigate({ routeName: 'Reminders', params: {activeTab: 'NoDateTasks'} })
             ]
         });
         this.props.screenProps.navigation.dispatch(resetAction);
@@ -278,7 +278,8 @@ const TasksTabsScreen = TabNavigator(
                 backgroundColor: '#007AFF',
             },
             indicatorStyle: {
-                backgroundColor: '#D0D0D0'
+                backgroundColor: '#D0D0D0',
+                height: 3
             }
         }
     }

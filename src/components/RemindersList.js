@@ -41,7 +41,7 @@ class RemindersList extends Component {
         const resetAction = NavigationActions.reset({
             index: 0,
             actions: [
-                NavigationActions.navigate({ routeName: 'Main' })
+                NavigationActions.navigate({ routeName: 'Main', params: {activeTab: this.props.navigation.state.params.activeTab} })
             ]
         });
         this.props.navigation.dispatch(resetAction);
