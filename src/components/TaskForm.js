@@ -40,8 +40,15 @@ class TaskForm extends Component {
     }
 
     onButtonPress() {
+        let activeTab = '';
         if (this.state.title.length > 0) {
             if (this.state.hasDeadline) {
+                if (this.state.date > new Date()) {
+                    activeTab = 'CurrentTasks';
+                }
+                else {
+                    activeTab = 'PastTasks';
+                }
                 if (this.state.notifyMe) {
                     if (this.state.notifyInterval !== '') {
                         PushNotification.localNotificationSchedule({
@@ -70,6 +77,7 @@ class TaskForm extends Component {
                 });
             }
             else {
+                activeTab = 'NoDateTasks';
                 RealmController.createTask({
                     title: this.state.title,
                     description: this.state.description
@@ -78,7 +86,7 @@ class TaskForm extends Component {
             const resetAction = NavigationActions.reset({
                 index: 0,
                 actions: [
-                    NavigationActions.navigate({routeName: 'Main'})
+                    NavigationActions.navigate({routeName: 'Main', params: {activeTab: activeTab}})
                 ]
             });
             this.props.navigation.dispatch(resetAction);

@@ -35,11 +35,13 @@ class RealmController {
     }
 
     static findNoDateTasks() {
-        return repository.objects('Tasks').filtered('taskDate = $0', null).slice();
+        const sortBy =  [['latestUpdateTimeStamp', true]];
+        return repository.objects('Tasks').filtered('taskDate = $0', null).sorted(sortBy).slice();
     }
 
     static findAllReminders() {
-        return repository.objects('Reminders').slice();
+        const sortBy =  [['latestUpdateTimeStamp', true]];
+        return repository.objects('Reminders').sorted(sortBy).slice();
     }
 
     static updateSurrogateKeys() {

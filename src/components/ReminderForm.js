@@ -21,7 +21,7 @@ class ReminderForm extends Component {
             const resetAction = NavigationActions.reset({
                 index: 0,
                 actions: [
-                    NavigationActions.navigate({routeName: 'Main'})
+                    NavigationActions.navigate({routeName: 'Reminders'})
                 ]
             });
             this.props.navigation.dispatch(resetAction);

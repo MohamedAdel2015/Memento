@@ -12,7 +12,7 @@ class RemindersList extends Component {
 
     constructor() {
         super();
-        let reminders = RealmController.findAllReminders().reverse();
+        let reminders = RealmController.findAllReminders();
         this.state = {
             reminders: reminders
         };
@@ -28,7 +28,8 @@ class RemindersList extends Component {
     }
 
     onReminderDelete() {
-        let reminders = RealmController.findAllReminders().reverse();
+        let reminders = RealmController.findAllReminders();
+        console.log("Reminders ", reminders);
         this.setState({ reminders: reminders });
     }
 
@@ -91,7 +92,6 @@ const styles = {
         flex: 1,
         marginTop: 5,
         marginBottom: 5,
-        backgroundColor: '#FFF'
     },
     actionButtonIcon: {
         fontSize: 28,

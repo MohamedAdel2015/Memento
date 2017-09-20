@@ -21,6 +21,13 @@ class CurrentTasks extends Component {
         this.onNavigateToReminders = this.onNavigateToReminders.bind(this);
     }
 
+    componentWillMount() {
+        const { activeTab } = this.props.screenProps;
+        if (activeTab && activeTab.length > 0) {
+            this.props.navigation.navigate(activeTab);
+        }
+    }
+
     componentDidMount() {
         let currentTasks = RealmController.findAllPresentTasks().reverse();
         this.setState({ currentTasks: currentTasks });
@@ -32,6 +39,7 @@ class CurrentTasks extends Component {
 
     onTaskDelete() {
         let currentTasks = RealmController.findAllPresentTasks().reverse();
+        console.log("Tasks ", currentTasks);
         this.setState({ currentTasks: currentTasks });
     }
 
@@ -42,7 +50,7 @@ class CurrentTasks extends Component {
                 NavigationActions.navigate({ routeName: 'Reminders' })
             ]
         });
-        this.props.navigation.dispatch(resetAction);
+        this.props.screenProps.navigation.dispatch(resetAction);
     }
 
     render() {
@@ -55,7 +63,7 @@ class CurrentTasks extends Component {
 
                 <ActionButton buttonColor="#007AFF" icon={<Icon name="md-add" style={styles.actionButtonIcon}/>} spacing={8} offsetX={30} offsetY={20} useNativeFeedback={false}>
                     <ActionButton.Item buttonColor='#9b59b6' title="New Task"
-                                       onPress={() => this.props.navigation.navigate('TaskForm')}
+                                       onPress={() => this.props.screenProps.navigation.navigate('TaskForm')}
                                        useNativeFeedback={false}
                                        spaceBetween={10}>
                         <Icon name="md-create" style={styles.actionButtonIcon} />
@@ -73,7 +81,7 @@ class CurrentTasks extends Component {
                                 NavigationActions.navigate({ routeName: 'Login' })
                             ]
                         });
-                        this.props.navigation.dispatch(resetAction);
+                        this.props.screenProps.navigation.dispatch(resetAction);
                     }}
                                        useNativeFeedback={false}
                                        spaceBetween={10}>
@@ -110,6 +118,7 @@ class PastTasks extends Component {
 
     onTaskDelete() {
         let pastTasks = RealmController.findAllPastTasks();
+        console.log("Past Tasks ", pastTasks);
         this.setState({ pastTasks: pastTasks });
     }
 
@@ -120,7 +129,7 @@ class PastTasks extends Component {
                 NavigationActions.navigate({ routeName: 'Reminders' })
             ]
         });
-        this.props.navigation.dispatch(resetAction);
+        this.props.screenProps.navigation.dispatch(resetAction);
     }
 
     render() {
@@ -133,7 +142,7 @@ class PastTasks extends Component {
 
                 <ActionButton buttonColor="#007AFF" icon={<Icon name="md-add" style={styles.actionButtonIcon}/>} spacing={8} offsetX={30} offsetY={20} useNativeFeedback={false}>
                     <ActionButton.Item buttonColor='#9b59b6' title="New Task"
-                                       onPress={() => this.props.navigation.navigate('TaskForm')}
+                                       onPress={() => this.props.screenProps.navigation.navigate('TaskForm')}
                                        useNativeFeedback={false}
                                        spaceBetween={10}>
                         <Icon name="md-create" style={styles.actionButtonIcon} />
@@ -151,7 +160,7 @@ class PastTasks extends Component {
                                 NavigationActions.navigate({ routeName: 'Login' })
                             ]
                         });
-                        this.props.navigation.dispatch(resetAction);
+                        this.props.screenProps.navigation.dispatch(resetAction);
                     }}
                                        useNativeFeedback={false}
                                        spaceBetween={10}>
@@ -178,7 +187,7 @@ class NoDateTasks extends Component {
     }
 
     componentDidMount() {
-        let noDateTasks = RealmController.findNoDateTasks();
+        let noDateTasks = RealmController.findNoDateTasks().reverse();
         this.setState({ noDateTasks: noDateTasks });
     }
 
@@ -187,7 +196,8 @@ class NoDateTasks extends Component {
     };
 
     onTaskDelete() {
-        let noDateTasks = RealmController.findNoDateTasks();
+        let noDateTasks = RealmController.findNoDateTasks().reverse();
+        console.log("No Date Tasks ", noDateTasks);
         this.setState({ noDateTasks: noDateTasks });
     }
 
@@ -198,7 +208,7 @@ class NoDateTasks extends Component {
                 NavigationActions.navigate({ routeName: 'Reminders' })
             ]
         });
-        this.props.navigation.dispatch(resetAction);
+        this.props.screenProps.navigation.dispatch(resetAction);
     }
 
     render() {
@@ -211,7 +221,7 @@ class NoDateTasks extends Component {
 
                 <ActionButton buttonColor="#007AFF" icon={<Icon name="md-add" style={styles.actionButtonIcon}/>} spacing={8} offsetX={30} offsetY={20} useNativeFeedback={false}>
                     <ActionButton.Item buttonColor='#9b59b6' title="New Task"
-                                       onPress={() => this.props.navigation.navigate('TaskForm')}
+                                       onPress={() => this.props.screenProps.navigation.navigate('TaskForm')}
                                        useNativeFeedback={false}
                                        spaceBetween={10}>
                         <Icon name="md-create" style={styles.actionButtonIcon} />
@@ -230,7 +240,7 @@ class NoDateTasks extends Component {
                                         NavigationActions.navigate({ routeName: 'Login' })
                                     ]
                                 });
-                                this.props.navigation.dispatch(resetAction);
+                                this.props.screenProps.navigation.dispatch(resetAction);
                                }}
                                        useNativeFeedback={false}
                                        spaceBetween={10}>
@@ -247,7 +257,6 @@ const styles = {
         flex: 1,
         marginTop: 5,
         marginBottom: 5,
-        backgroundColor: '#FFF'
     },
     actionButtonIcon: {
         fontSize: 28,
@@ -275,4 +284,13 @@ const TasksTabsScreen = TabNavigator(
     }
 );
 
-export default TasksTabsScreen;
+export default class TabsScreen extends Component {
+
+    render() {
+        return(
+            <View style={{ flex: 1 }}>
+                <TasksTabsScreen screenProps={{ activeTab: this.props.navigation.state.params.activeTab, navigation: this.props.navigation }} />
+            </View>
+        );
+    }
+};
