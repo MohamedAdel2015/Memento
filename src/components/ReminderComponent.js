@@ -4,7 +4,7 @@ import { Card, CardSection, Confirm } from './common';
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
 import RealmController from '../Database/Realm';
 import FontIcons from 'react-native-vector-icons/FontAwesome';
-import MatIcons from 'react-native-vector-icons/MaterialIcons';
+import MatIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 class ReminderComponent extends Component {
 
@@ -73,14 +73,14 @@ class ReminderComponent extends Component {
                                     <MenuOption onSelect={() => this.props.onReminderEdit(this.props.item) } >
                                         <View style={{ flex: 1, justifyContent: 'center', height: 30 }}>
                                             <Text style={{ fontSize: 15, marginLeft: 5 }}>
-                                                <FontIcons name='edit' /> Edit
+                                                <FontIcons name='edit' style={{ fontSize: 15 }} /> Edit
                                             </Text>
                                         </View>
                                     </MenuOption>
                                     <MenuOption onSelect={() => this.setState({ showModal: true }) }>
                                         <View style={{ flex: 1, justifyContent: 'center', height: 30 }}>
                                             <Text style={{ fontSize: 15, marginLeft: 5, color: 'red' }}>
-                                                <MatIcons name='delete-forever' /> Delete
+                                                <MatIcons name='delete-forever' style={{ fontSize: 15 }} /> Delete
                                             </Text>
                                         </View>
                                     </MenuOption>

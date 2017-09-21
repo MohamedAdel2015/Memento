@@ -7,7 +7,7 @@ import moment from 'moment';
 import RealmController from '../Database/Realm';
 import IonIcons from 'react-native-vector-icons/Ionicons';
 import FontIcons from 'react-native-vector-icons/FontAwesome';
-import MatIcons from 'react-native-vector-icons/MaterialIcons';
+import MatIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 function getDateFormat(date) {
     if (date) {
@@ -21,7 +21,7 @@ function getDateFormat(date) {
         });
     }
     else {
-        return "Task has No Reminder Date";
+        return "No Reminder Date";
     }
 }
 
@@ -39,6 +39,7 @@ class TaskComponent extends Component {
         this.renderDescription = this.renderDescription.bind(this);
         this.toggleDescription = this.toggleDescription.bind(this);
         this.stopNotification = this.stopNotification.bind(this);
+        this.renderTitle = this.renderTitle.bind(this);
     }
 
     componentWillUpdate() {
@@ -63,6 +64,32 @@ class TaskComponent extends Component {
                     </CardSection>
                 );
             }
+        }
+    }
+
+    renderTitle(font, dateFont) {
+        if(this.props.item.notifyMe) {
+            if(this.props.item.repeatInterval === 'None') {
+                return(
+                    <Text style={{ ...styles.titleStyle, color: font }}>
+                        {this.props.item.title} <IonIcons name='md-notifications' style={{ fontSize: 20, color: font }}/>
+                    </Text>
+                );
+            }
+            else {
+                return(
+                    <Text style={{ ...styles.titleStyle, color: font }}>
+                        {this.props.item.title} <IonIcons name='md-notifications' style={{ fontSize: 20, color: font }}/> <FontIcons name='repeat' style={{ fontSize: 18, color: font }}/>
+                    </Text>
+                );
+            }
+        }
+        else {
+            return(
+                <Text style={{ ...styles.titleStyle, color: font }}>
+                    {this.props.item.title}
+                </Text>
+            );
         }
     }
 
@@ -91,6 +118,7 @@ class TaskComponent extends Component {
             notifyMe: false
         });
         PushNotification.cancelLocalNotifications({ id: this.props.item.key + '' });
+        this.forceUpdate();
     }
 
     render() {
@@ -125,11 +153,11 @@ class TaskComponent extends Component {
                 <Card>
                     <CardSection style={{ backgroundColor: color }}>
                         <View style={{ flex: 1, flexDirection: 'row' }}>
-                            <View style={{ marginLeft: 5, alignItems: 'center', justifyContent: 'center' }}>
+                            <View style={{ marginLeft: 5, alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }}>
                                 <Image source={thumbnail_image} style={{ height:32, width: 32 }}/>
                             </View>
                             <View>
-                                <Text style={{ ...styles.titleStyle, color: font }}>{this.props.item.title}</Text>
+                                {this.renderTitle(font, dateFont)}
                                 <Text style={{ ...styles.timeStyle, color: dateFont }}>{getDateFormat(this.props.item.taskDate)}</Text>
                             </View>
                         </View>
@@ -142,7 +170,7 @@ class TaskComponent extends Component {
                                     <MenuOption onSelect={() => this.props.onTaskEdit(this.props.item) } >
                                         <View style={{ flex: 1, justifyContent: 'center', height: 30 }}>
                                             <Text style={{ fontSize: 15, marginLeft: 5 }}>
-                                                <FontIcons name='edit' /> Edit
+                                                <FontIcons name='edit' style={{ fontSize: 15 }} /> Edit
                                             </Text>
                                         </View>
                                     </MenuOption>
@@ -150,7 +178,7 @@ class TaskComponent extends Component {
                                     {this.props.item.notifyMe ? (<MenuOption onSelect={ () => this.stopNotification() } >
                                         <View style={{ flex: 1, justifyContent: 'center', height: 30 }}>
                                             <Text style={{ fontSize: 15, marginLeft: 5 }}>
-                                                <IonIcons name='md-notifications-off' /> Stop Notifications
+                                                <IonIcons name='md-notifications-off' style={{ fontSize: 15 }} /> Stop Notifications
                                             </Text>
                                         </View>
                                     </MenuOption> ) : null }
@@ -158,7 +186,7 @@ class TaskComponent extends Component {
                                     <MenuOption onSelect={() => this.setState({ showModal: true }) } >
                                         <View style={{ flex: 1, justifyContent: 'center', height: 30 }}>
                                             <Text style={{ fontSize: 15, marginLeft: 5, color: 'red' }}>
-                                                <MatIcons name='delete-forever' /> Delete
+                                                <MatIcons name='delete-forever' style={{ fontSize: 15 }} /> Delete
                                             </Text>
                                         </View>
                                     </MenuOption>
@@ -184,11 +212,13 @@ const styles = {
     titleStyle: {
         fontSize: 20,
         paddingLeft: 15,
+        paddingRight: 30,
         color: '#000'
     },
     timeStyle: {
         fontSize: 12,
         paddingLeft: 15,
+        paddingRight: 15,
         color: '#ADADAC'
     },
     descriptionStyle: {
