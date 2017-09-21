@@ -19,7 +19,6 @@ class ReminderForm extends Component {
     componentWillMount() {
         let name = '', value = '', isEdit = false;
         const { params } = this.props.navigation.state;
-        console.log("Params ", params);
         if (params) {
             if (params.item) {
                 name = params.item.name;
@@ -99,7 +98,7 @@ class ReminderForm extends Component {
 
                                 <CardSection>
                                     <Button onPress={this.onButtonPress}>
-                                        {this.state.isEdit ? "Edit Thing" : "Add Thing"}
+                                        {this.state.isEdit ? "Update" : "Add"}
                                     </Button>
                                 </CardSection>
                             </Card>

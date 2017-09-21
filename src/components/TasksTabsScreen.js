@@ -18,6 +18,7 @@ class CurrentTasks extends Component {
             UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
         }
         this.onTaskDelete = this.onTaskDelete.bind(this);
+        this.onTaskEdit = this.onTaskEdit.bind(this);
         this.onNavigateToReminders = this.onNavigateToReminders.bind(this);
     }
 
@@ -43,6 +44,10 @@ class CurrentTasks extends Component {
         this.setState({ currentTasks: currentTasks });
     }
 
+    onTaskEdit(item) {
+        this.props.screenProps.navigation.navigate('TaskForm', { item: item });
+    }
+
     onNavigateToReminders() {
         const resetAction = NavigationActions.reset({
             index: 0,
@@ -58,7 +63,7 @@ class CurrentTasks extends Component {
             <View style={styles.tabViewStyle}>
                 <FlatList
                     data={this.state.currentTasks}
-                    renderItem={({item}) => <TaskItem item={item} onTaskDelete={this.onTaskDelete}/> }
+                    renderItem={({item}) => <TaskItem item={item} onTaskEdit={this.onTaskEdit} onTaskDelete={this.onTaskDelete}/> }
                 />
 
                 <ActionButton buttonColor="#007AFF" icon={<Icon name="md-add" style={styles.actionButtonIcon}/>} spacing={8} offsetX={30} offsetY={20} useNativeFeedback={false}>
@@ -104,6 +109,7 @@ class PastTasks extends Component {
             UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
         }
         this.onTaskDelete = this.onTaskDelete.bind(this);
+        this.onTaskEdit = this.onTaskEdit.bind(this);
         this.onNavigateToReminders = this.onNavigateToReminders.bind(this);
     }
 
@@ -115,6 +121,10 @@ class PastTasks extends Component {
     static navigationOptions = {
         title: 'Past',
     };
+
+    onTaskEdit(item) {
+        this.props.screenProps.navigation.navigate('TaskForm', { item: item });
+    }
 
     onTaskDelete() {
         let pastTasks = RealmController.findAllPastTasks();
@@ -137,7 +147,7 @@ class PastTasks extends Component {
             <View style={styles.tabViewStyle}>
                 <FlatList
                     data={this.state.pastTasks}
-                    renderItem={({item}) => <TaskItem item={item} onTaskDelete={this.onTaskDelete}/> }
+                    renderItem={({item}) => <TaskItem item={item} onTaskEdit={this.onTaskEdit} onTaskDelete={this.onTaskDelete}/> }
                 />
 
                 <ActionButton buttonColor="#007AFF" icon={<Icon name="md-add" style={styles.actionButtonIcon}/>} spacing={8} offsetX={30} offsetY={20} useNativeFeedback={false}>
@@ -183,6 +193,7 @@ class NoDateTasks extends Component {
             UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
         }
         this.onTaskDelete = this.onTaskDelete.bind(this);
+        this.onTaskEdit = this.onTaskEdit.bind(this);
         this.onNavigateToReminders = this.onNavigateToReminders.bind(this);
     }
 
@@ -194,6 +205,10 @@ class NoDateTasks extends Component {
     static navigationOptions = {
         title: 'No Date',
     };
+
+    onTaskEdit(item) {
+        this.props.screenProps.navigation.navigate('TaskForm', { item: item });
+    }
 
     onTaskDelete() {
         let noDateTasks = RealmController.findNoDateTasks().reverse();
@@ -216,7 +231,7 @@ class NoDateTasks extends Component {
             <View style={styles.tabViewStyle}>
                 <FlatList
                     data={this.state.noDateTasks}
-                    renderItem={({item}) => <TaskItem item={item} onTaskDelete={this.onTaskDelete}/> }
+                    renderItem={({item}) => <TaskItem item={item} onTaskEdit={this.onTaskEdit} onTaskDelete={this.onTaskDelete}/> }
                 />
 
                 <ActionButton buttonColor="#007AFF" icon={<Icon name="md-add" style={styles.actionButtonIcon}/>} spacing={8} offsetX={30} offsetY={20} useNativeFeedback={false}>

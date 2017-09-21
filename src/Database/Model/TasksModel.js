@@ -7,6 +7,8 @@ export default TasksModel = {
         description: 'string',
         latestUpdateTimeStamp: 'date',
         taskDate: {type: 'date', optional: true},
+        repeatInterval: {type: 'string', optional: true},
+        notifyMe: 'bool',
         status: 'int'
     }
 }

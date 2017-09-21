@@ -122,7 +122,7 @@ class TaskComponent extends Component {
                                     <Image style={{ height: 25, width: 25 }} source={more_menu} />
                                 </MenuTrigger>
                                 <MenuOptions>
-                                    <MenuOption onSelect={() => {} } >
+                                    <MenuOption onSelect={() => this.props.onTaskEdit(this.props.item) } >
                                         <View style={{ flex: 1, justifyContent: 'center', height: 30 }}>
                                             <Text style={{ fontSize: 15, marginLeft: 5 }}>Edit</Text>
                                         </View>

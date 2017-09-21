@@ -122,6 +122,14 @@ class RealmController {
             repository.create('Reminders', reminder, true);
         })
     }
+
+    static updateTask(task) {
+        repository.write(() => {
+            task.latestUpdateTimeStamp = new Date();
+            task.status = 0;
+            repository.create('Tasks', task, true);
+        })
+    }
 }
 
 export default RealmController;

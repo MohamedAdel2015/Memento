@@ -11,6 +11,7 @@ import ReminderForm from './components/ReminderForm';
 import RemindersList from './components/RemindersList';
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
 import ComIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import PushNotification from 'react-native-push-notification';
 
 class Home extends Component {
 
@@ -27,6 +28,7 @@ class Home extends Component {
 
     componentWillMount() {
         RealmController.updateSurrogateKeys();
+        //PushNotification.cancelAllLocalNotifications();
     }
 
     navigateToMainScreen() {

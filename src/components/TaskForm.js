@@ -20,7 +20,8 @@ class TaskForm extends Component {
             hasDeadline: false,
             notifyMe: false,
             interval: 'None',
-            notifyInterval: ''
+            notifyInterval: '',
+            isEdit: false
         };
         this.onButtonPress = this.onButtonPress.bind(this);
         this.handleDatePicked = this.handleDatePicked.bind(this);
@@ -29,6 +30,27 @@ class TaskForm extends Component {
         this.renderDateTimeText = this.renderDateTimeText.bind(this);
         this.renderRepeatNotification = this.renderRepeatNotification.bind(this);
         this.handleIntervalChange = this.handleIntervalChange.bind(this);
+    }
+
+    componentWillMount() {
+        const { params } = this.props.navigation.state;
+        if(params) {
+            if(params.item) {
+                let title = params.item.title;
+                let description = params.item.description;
+                let hasDeadline = false;
+                let notifyMe = false;
+                let date = new Date();
+                let isEdit = true;
+                if (params.item.taskDate) {
+                    date = params.item.taskDate;
+                    hasDeadline = true;
+                    notifyMe = params.item.notifyMe;
+                    this.handleIntervalChange(params.item.repeatInterval);
+                }
+                this.setState({ title, description, date, hasDeadline, notifyMe, isEdit });
+            }
+        }
     }
 
     handleDatePicked(date) {
@@ -42,6 +64,9 @@ class TaskForm extends Component {
     onButtonPress() {
         let activeTab = '';
         if (this.state.title.length > 0) {
+            if (this.state.isEdit) {
+                PushNotification.cancelLocalNotifications({id: this.props.navigation.state.params.item.key + ''});
+            }
             if (this.state.hasDeadline) {
                 if (this.state.date > new Date()) {
                     activeTab = 'CurrentTasks';
@@ -49,10 +74,14 @@ class TaskForm extends Component {
                 else {
                     activeTab = 'PastTasks';
                 }
-                if (this.state.notifyMe) {
+                if (this.state.notifyMe && this.state.date > new Date()) {
+                    let id = RealmController.getNextTaskSurrogateKey();
+                    if (this.state.isEdit) {
+                        id = this.props.navigation.state.params.item.key;
+                    }
                     if (this.state.notifyInterval !== '') {
                         PushNotification.localNotificationSchedule({
-                            id: RealmController.getNextTaskSurrogateKey() + '',
+                            id: id + '',
                             title: this.state.title,
                             message: this.state.description,
                             date: this.state.date,
@@ -62,7 +91,7 @@ class TaskForm extends Component {
                     }
                     else {
                         PushNotification.localNotificationSchedule({
-                            id: RealmController.getNextTaskSurrogateKey() + '',
+                            id: id + '',
                             title: this.state.title,
                             message: this.state.description,
                             date: this.state.date
@@ -70,18 +99,46 @@ class TaskForm extends Component {
                         ToastAndroid.show("Notification is Scheduled Without Repeat", ToastAndroid.SHORT);
                     }
                 }
-                RealmController.createTask({
-                    title: this.state.title,
-                    description: this.state.description,
-                    taskDate: this.state.date
-                });
+                if (this.state.isEdit) {
+                    RealmController.updateTask({
+                        key: this.props.navigation.state.params.item.key,
+                        title: this.state.title,
+                        description: this.state.description,
+                        taskDate: this.state.date,
+                        repeatInterval: this.state.interval,
+                        notifyMe: this.state.notifyMe
+                    });
+                }
+                else {
+                    RealmController.createTask({
+                        title: this.state.title,
+                        description: this.state.description,
+                        taskDate: this.state.date,
+                        repeatInterval: this.state.interval,
+                        notifyMe: this.state.notifyMe
+                    });
+                }
             }
             else {
                 activeTab = 'NoDateTasks';
-                RealmController.createTask({
-                    title: this.state.title,
-                    description: this.state.description
-                });
+                if (this.state.isEdit) {
+                    RealmController.updateTask({
+                        key: this.props.navigation.state.params.item.key,
+                        title: this.state.title,
+                        description: this.state.description,
+                        taskDate: null,
+                        repeatInterval: 'None',
+                        notifyMe: false
+                    });
+                }
+                else {
+                    RealmController.createTask({
+                        title: this.state.title,
+                        description: this.state.description,
+                        repeatInterval: 'None',
+                        notifyMe: false
+                    });
+                }
             }
             const resetAction = NavigationActions.reset({
                 index: 0,
@@ -189,7 +246,7 @@ class TaskForm extends Component {
                                 <CardSection>
                                     <View style={{ flex: 1 }}>
                                         <Text style={styles.welcomeTextStyle}>
-                                            Add Task
+                                            {this.state.isEdit ? "Edit Task" : "Add Task"}
                                         </Text>
                                     </View>
                                 </CardSection>
@@ -231,7 +288,7 @@ class TaskForm extends Component {
 
                                 <CardSection>
                                     <Button onPress={this.onButtonPress}>
-                                        Add Task
+                                        {this.state.isEdit ? "Update" : "Add"}
                                     </Button>
                                 </CardSection>
                             </Card>
