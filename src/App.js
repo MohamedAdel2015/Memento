@@ -84,7 +84,7 @@ class Login extends Component {
         const resetAction = NavigationActions.reset({
             index: 0,
             actions: [
-                NavigationActions.navigate({ routeName: 'Main' })
+                NavigationActions.navigate({ routeName: 'Main', params: {activeTab: 'CurrentTasks'} })
             ]
         });
         this.props.navigation.dispatch(resetAction);
