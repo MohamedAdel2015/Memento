@@ -5,6 +5,9 @@ import PushNotification from 'react-native-push-notification';
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
 import moment from 'moment';
 import RealmController from '../Database/Realm';
+import IonIcons from 'react-native-vector-icons/Ionicons';
+import FontIcons from 'react-native-vector-icons/FontAwesome';
+import MatIcons from 'react-native-vector-icons/MaterialIcons';
 
 function getDateFormat(date) {
     if (date) {
@@ -35,6 +38,7 @@ class TaskComponent extends Component {
         }
         this.renderDescription = this.renderDescription.bind(this);
         this.toggleDescription = this.toggleDescription.bind(this);
+        this.stopNotification = this.stopNotification.bind(this);
     }
 
     componentWillUpdate() {
@@ -74,6 +78,19 @@ class TaskComponent extends Component {
 
     onDecline() {
         this.setState({ showModal: false });
+    }
+
+    stopNotification() {
+        let item = this.props.item;
+        RealmController.updateTask({
+            key: item.key,
+            title: item.title,
+            description: item.description,
+            taskDate: item.taskDate,
+            repeatInterval: 'None',
+            notifyMe: false
+        });
+        PushNotification.cancelLocalNotifications({ id: this.props.item.key + '' });
     }
 
     render() {
@@ -124,17 +141,25 @@ class TaskComponent extends Component {
                                 <MenuOptions>
                                     <MenuOption onSelect={() => this.props.onTaskEdit(this.props.item) } >
                                         <View style={{ flex: 1, justifyContent: 'center', height: 30 }}>
-                                            <Text style={{ fontSize: 15, marginLeft: 5 }}>Edit</Text>
+                                            <Text style={{ fontSize: 15, marginLeft: 5 }}>
+                                                <FontIcons name='edit' /> Edit
+                                            </Text>
                                         </View>
                                     </MenuOption>
-                                    <MenuOption onSelect={() => PushNotification.cancelLocalNotifications({ id: this.props.item.key + '' })} >
+
+                                    {this.props.item.notifyMe ? (<MenuOption onSelect={ () => this.stopNotification() } >
                                         <View style={{ flex: 1, justifyContent: 'center', height: 30 }}>
-                                            <Text style={{ fontSize: 15, marginLeft: 5 }}>Stop Notifications</Text>
+                                            <Text style={{ fontSize: 15, marginLeft: 5 }}>
+                                                <IonIcons name='md-notifications-off' /> Stop Notifications
+                                            </Text>
                                         </View>
-                                    </MenuOption>
+                                    </MenuOption> ) : null }
+
                                     <MenuOption onSelect={() => this.setState({ showModal: true }) } >
                                         <View style={{ flex: 1, justifyContent: 'center', height: 30 }}>
-                                            <Text style={{ fontSize: 15, marginLeft: 5, color: 'red' }}>Delete</Text>
+                                            <Text style={{ fontSize: 15, marginLeft: 5, color: 'red' }}>
+                                                <MatIcons name='delete-forever' /> Delete
+                                            </Text>
                                         </View>
                                     </MenuOption>
                                 </MenuOptions>
