@@ -45,16 +45,6 @@ class RealmController {
     }
 
     static updateSurrogateKeys() {
-        /*let tasks = RealmController.findAllTasks();
-        let reminders = RealmController.findAllReminders();
-        console.log("All Tasks ", tasks);
-        console.log("All Reminders ", reminders);
-        if(tasks.length !== 0)
-            RealmController.tasksSurrogateKey = tasks[tasks.length - 1].key;
-        if(reminders.length !== 0)
-            RealmController.remindersSurrogateKey = reminders[reminders.length - 1].key;
-        console.log("Current # of Tasks ", RealmController.tasksSurrogateKey);
-        console.log("Current # of Reminders", RealmController.remindersSurrogateKey);*/
         let taskSurrogateResponse = RealmController.findSetting('tasksSurrogateKey');
         if(taskSurrogateResponse.length > 0) {
             RealmController.tasksSurrogateKey = Number(taskSurrogateResponse[0].value);

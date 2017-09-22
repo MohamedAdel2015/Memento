@@ -2,10 +2,13 @@ import React, { Component } from 'react';
 import { Text, View, FlatList, ToastAndroid, Platform, UIManager, LayoutAnimation } from 'react-native';
 import { TabNavigator, NavigationActions } from 'react-navigation';
 import TaskItem from './TaskComponent';
+import { Spinner } from './common';
 import RealmController from '../Database/Realm';
 import ActionButton from 'react-native-action-button';
 import Icon from 'react-native-vector-icons/Ionicons';
 import ComIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import moment from 'moment';
+import PTRView from './common/PullToRefresh';
 
 class CurrentTasks extends Component {
 
@@ -27,11 +30,11 @@ class CurrentTasks extends Component {
         if (activeTab && activeTab.length > 0) {
             this.props.navigation.navigate(activeTab);
         }
+        this.setState({ currentTasks: this.props.screenProps.currentTasks });
     }
 
-    componentDidMount() {
-        let currentTasks = RealmController.findAllPresentTasks().reverse();
-        this.setState({ currentTasks: currentTasks });
+    componentWillReceiveProps(nextProps) {
+        this.setState({ currentTasks: nextProps.screenProps.currentTasks });
     }
 
     static navigationOptions = {
@@ -40,7 +43,6 @@ class CurrentTasks extends Component {
 
     onTaskDelete() {
         let currentTasks = RealmController.findAllPresentTasks().reverse();
-        console.log("Tasks ", currentTasks);
         this.setState({ currentTasks: currentTasks });
     }
 
@@ -61,10 +63,12 @@ class CurrentTasks extends Component {
     render() {
         return(
             <View style={styles.tabViewStyle}>
-                <FlatList
-                    data={this.state.currentTasks}
-                    renderItem={({item}) => <TaskItem item={item} onTaskEdit={this.onTaskEdit} onTaskDelete={this.onTaskDelete}/> }
-                />
+                <PTRView onRefresh={this.props.screenProps.refreshView} colors={['#007aff']} >
+                    <FlatList
+                        data={this.state.currentTasks}
+                        renderItem={({item}) => <TaskItem item={item} onTaskEdit={this.onTaskEdit} onTaskDelete={this.onTaskDelete}/> }
+                    />
+                </PTRView>
 
                 <ActionButton buttonColor="#007AFF" icon={<Icon name="md-add" style={styles.actionButtonIcon}/>} spacing={8} offsetX={30} offsetY={20} useNativeFeedback={false}>
                     <ActionButton.Item buttonColor='#9b59b6' title="New Task"
@@ -113,9 +117,12 @@ class PastTasks extends Component {
         this.onNavigateToReminders = this.onNavigateToReminders.bind(this);
     }
 
-    componentDidMount() {
-        let pastTasks = RealmController.findAllPastTasks();
-        this.setState({ pastTasks: pastTasks });
+    componentWillMount() {
+        this.setState({ pastTasks: this.props.screenProps.pastTasks });
+    }
+
+    componentWillReceiveProps(nextProps) {
+        this.setState({ pastTasks: nextProps.screenProps.pastTasks });
     }
 
     static navigationOptions = {
@@ -127,8 +134,7 @@ class PastTasks extends Component {
     }
 
     onTaskDelete() {
-        let pastTasks = RealmController.findAllPastTasks();
-        console.log("Past Tasks ", pastTasks);
+        let pastTasks = RealmController.findAllPastTasks().reverse();
         this.setState({ pastTasks: pastTasks });
     }
 
@@ -145,10 +151,12 @@ class PastTasks extends Component {
     render() {
         return(
             <View style={styles.tabViewStyle}>
-                <FlatList
-                    data={this.state.pastTasks}
-                    renderItem={({item}) => <TaskItem item={item} onTaskEdit={this.onTaskEdit} onTaskDelete={this.onTaskDelete}/> }
-                />
+                <PTRView onRefresh={this.props.screenProps.refreshView} colors={['#007aff']} >
+                    <FlatList
+                        data={this.state.pastTasks}
+                        renderItem={({item}) => <TaskItem item={item} onTaskEdit={this.onTaskEdit} onTaskDelete={this.onTaskDelete}/> }
+                    />
+                </PTRView>
 
                 <ActionButton buttonColor="#007AFF" icon={<Icon name="md-add" style={styles.actionButtonIcon}/>} spacing={8} offsetX={30} offsetY={20} useNativeFeedback={false}>
                     <ActionButton.Item buttonColor='#9b59b6' title="New Task"
@@ -197,9 +205,12 @@ class NoDateTasks extends Component {
         this.onNavigateToReminders = this.onNavigateToReminders.bind(this);
     }
 
-    componentDidMount() {
-        let noDateTasks = RealmController.findNoDateTasks().reverse();
-        this.setState({ noDateTasks: noDateTasks });
+    componentWillMount() {
+        this.setState({ noDateTasks: this.props.screenProps.noDateTasks });
+    }
+
+    componentWillReceiveProps(nextProps) {
+        this.setState({ noDateTasks: nextProps.screenProps.noDateTasks });
     }
 
     static navigationOptions = {
@@ -212,7 +223,6 @@ class NoDateTasks extends Component {
 
     onTaskDelete() {
         let noDateTasks = RealmController.findNoDateTasks().reverse();
-        console.log("No Date Tasks ", noDateTasks);
         this.setState({ noDateTasks: noDateTasks });
     }
 
@@ -229,10 +239,12 @@ class NoDateTasks extends Component {
     render() {
         return(
             <View style={styles.tabViewStyle}>
-                <FlatList
-                    data={this.state.noDateTasks}
-                    renderItem={({item}) => <TaskItem item={item} onTaskEdit={this.onTaskEdit} onTaskDelete={this.onTaskDelete}/> }
-                />
+                <PTRView onRefresh={this.props.screenProps.refreshView} colors={['#007aff']} >
+                    <FlatList
+                        data={this.state.noDateTasks}
+                        renderItem={({item}) => <TaskItem item={item} onTaskEdit={this.onTaskEdit} onTaskDelete={this.onTaskDelete}/> }
+                    />
+                </PTRView>
 
                 <ActionButton buttonColor="#007AFF" icon={<Icon name="md-add" style={styles.actionButtonIcon}/>} spacing={8} offsetX={30} offsetY={20} useNativeFeedback={false}>
                     <ActionButton.Item buttonColor='#9b59b6' title="New Task"
@@ -300,12 +312,127 @@ const TasksTabsScreen = TabNavigator(
     }
 );
 
+function updateDatabase() {
+    return new Promise((resolve, reject) => {
+        const pastTasks = RealmController.findAllPastTasks();
+        for(let i = 0; i < pastTasks.length; i++) {
+            if(pastTasks[i].notifyMe) {
+                if(pastTasks[i].repeatInterval !== 'None') {
+                    let newDate = updateTaskDate(pastTasks[i]);
+                    RealmController.updateTask({
+                        key: pastTasks[i].key,
+                        title: pastTasks[i].title,
+                        description: pastTasks[i].description,
+                        taskDate: newDate,
+                        repeatInterval: pastTasks[i].repeatInterval,
+                        notifyMe: pastTasks[i].notifyMe
+                    });
+                }
+                else {
+                    RealmController.updateTask({
+                        key: pastTasks[i].key,
+                        title: pastTasks[i].title,
+                        description: pastTasks[i].description,
+                        taskDate: pastTasks[i].taskDate,
+                        repeatInterval: 'None',
+                        notifyMe: false
+                    });
+                }
+            }
+        }
+        resolve();
+    });
+}
+
+function updateTaskDate(task) {
+    let newDate = task.taskDate;
+    const diff = moment().diff(newDate);
+    if(task.repeatInterval === 'Every Week') {
+        while(newDate < new Date()) {
+            newDate = moment(newDate).add(1, 'w').toDate();
+        }
+    }
+    else if(task.repeatInterval === 'Every Day') {
+        while(newDate < new Date()) {
+            newDate = moment(newDate).add(1, 'd').toDate();
+        }
+    }
+    else if(task.repeatInterval === 'Every Hour') {
+        while(newDate < new Date()) {
+            newDate = moment(newDate).add(1, 'h').toDate();
+        }
+    }
+    else if(task.repeatInterval === 'Every Minute') {
+        while(newDate < new Date()) {
+            newDate = moment(newDate).add(1, 'm').toDate();
+        }
+    }
+    return newDate;
+}
+
 export default class TabsScreen extends Component {
+
+    constructor() {
+        super();
+        this.state = {
+            loading: true,
+            currentTasks: [],
+            pastTasks: [],
+            noDateTasks: []
+        };
+        this.renderContent = this.renderContent.bind(this);
+        this.refreshView = this.refreshView.bind(this);
+    }
+
+    refreshView() {
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                updateDatabase().then(() => {
+                    let currentTasks = RealmController.findAllPresentTasks().reverse();
+                    let pastTasks = RealmController.findAllPastTasks().reverse();
+                    let noDateTasks = RealmController.findNoDateTasks().reverse();
+                    this.setState({ currentTasks, pastTasks, noDateTasks });
+                    resolve();
+                })
+            }, 1000);
+        });
+    }
+
+    componentWillMount() {
+       updateDatabase().then(() => {
+           let currentTasks = RealmController.findAllPresentTasks().reverse();
+           let pastTasks = RealmController.findAllPastTasks().reverse();
+           let noDateTasks = RealmController.findNoDateTasks().reverse();
+           this.setState({ loading: false, currentTasks, pastTasks, noDateTasks });
+        });
+    }
+
+    renderContent() {
+        if (this.state.loading) {
+            return (
+                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                    <Spinner/>
+                </View>
+            );
+        }
+        return(
+            <View style={{ flex: 1 }}>
+                <TasksTabsScreen screenProps={{
+                    activeTab: this.props.navigation.state.params.activeTab,
+                    navigation: this.props.navigation,
+                    refreshView: this.refreshView,
+                    currentTasks: this.state.currentTasks,
+                    pastTasks: this.state.pastTasks,
+                    noDateTasks: this.state.noDateTasks
+                }} />
+            </View>
+        );
+    }
 
     render() {
         return(
             <View style={{ flex: 1 }}>
-                <TasksTabsScreen screenProps={{ activeTab: this.props.navigation.state.params.activeTab, navigation: this.props.navigation }} />
+                {this.renderContent()}
             </View>
         );
     }
